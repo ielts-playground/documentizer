@@ -1,0 +1,8 @@
+*       text auto
+
+*.md    text
+
+*.js    text diff=javascript
+*.json  text diff=json
+
+*.sh    text eol=lf
