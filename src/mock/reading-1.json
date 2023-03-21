@@ -1,0 +1,86 @@
+[
+    {
+        "type": "title",
+        "value": "This is the title",
+        "size": "h2"
+    },
+    {
+        "type": "text",
+        "value": "**Once upon a time**, there is a man who lives in his house..."
+    },
+    {
+        "type": "question",
+        "kei": "1",
+        "value": "What does the fox say?",
+        "options": {
+            "A": "Meow meow",
+            "B": "Bow bow",
+            "C": "Quack quack",
+            "D": "It doesn't say"
+        }
+    },
+    {
+        "type": "question",
+        "kei": "2",
+        "value": "Where are you?"
+    },
+    {
+        "type": "text",
+        "value": "Answer the questions by choosing **ONE** of the following options:"
+    },
+    {
+        "type": "list",
+        "kei": "true-false-not-given",
+        "options": {
+            "TRUE": "if you agree with the statement",
+            "FALSE": "if you don't agree with the statement",
+            "NOT GIVEN": "if you have no idea about the statement"
+        }
+    },
+    {
+        "type": "question",
+        "kei": "3",
+        "value": "Are you happy now?",
+        "options": "true-false-not-given"
+    },
+    {
+        "type": "text",
+        "value": "Hello, _you_, this is me. My name is "
+    },
+    {
+        "type": "box",
+        "kei": "4"
+    },
+    {
+        "type": "text",
+        "value": ". I'm 20 years old now."
+    },
+    {
+        "type": "title",
+        "value": "A good picture of mine",
+        "size": "h3"
+    },
+    {
+        "type": "image",
+        "value": "https://photographer.vn/wp-content/uploads/2020/09/chupanhmonanhaisan3-01-scaled-1200x849.jpg",
+        "size": {
+            "width": "300px",
+            "height": "200px"
+        }
+    },
+    {
+        "type": "text",
+        "value": "And this is a list:"
+    },
+    {
+        "type": "list",
+        "kei": "people",
+        "value": "List of people",
+        "options": {
+            "A": "Alex Nguyen",
+            "B": "Bruno Mars",
+            "C": "Cristinao Ronaldo",
+            "D": "Darwin"
+        }
+    }
+]

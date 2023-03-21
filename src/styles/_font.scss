@@ -1,0 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Quattrocento&display=swap');
+
+@mixin useFont {
+    font-family: 'Quattrocento', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}

@@ -1,0 +1,16 @@
+@import '@styles/font';
+
+.container {
+    margin: 10px;
+    padding: 20px;
+    width: 80vw;
+    max-height: 60vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fff;
+
+    * {
+        @include useFont;
+        font-size: large;
+    }
+}

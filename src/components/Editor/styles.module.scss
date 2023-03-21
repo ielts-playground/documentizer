@@ -1,0 +1,58 @@
+@import '@styles/font';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    opacity: 0.95;
+
+    * {
+        @include useFont;
+        font-size: large;
+    }
+
+    .rawText {
+        padding: 20px;
+        width: 80vw;
+        margin: 10px;
+        max-height: 40vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .action {
+        display: flex;
+
+        button {
+            padding: 10px;
+            margin: 20px;
+        }
+    }
+
+    .type {
+        display: flex;
+
+        select {
+            text-align: center;
+            min-width: 20vw;
+            padding: 10px;
+            margin: 20px;
+        }
+
+        .number {
+            text-align: center;
+            padding: 10px;
+            margin: 20px;
+            background-color: #fff;
+            width: 200px;
+            border-radius: 5px;
+        }
+    }
+}
