@@ -1,0 +1,8 @@
+@host={{HOST}}
+
+{{+request
+    request.headers['content-type'] = 'application/json';
+}}
+
+### ping
+GET /ping
