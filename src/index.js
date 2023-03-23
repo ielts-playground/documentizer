@@ -16,5 +16,5 @@ import bodyParser from 'body-parser';
         res.send('pong');
     });
 
-    app.listen(process.env.PORT, () => console.log('started'));
+    app.listen(process.env.PORT);
 }

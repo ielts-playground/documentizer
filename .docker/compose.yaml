@@ -1,0 +1,12 @@
+services:
+  server:
+    build:
+      context: .
+    image: ielts-playground/documentizer:1.0
+    container_name: documentizer
+    environment:
+      - PORT=3000
+    ports:
+      - $PORT:3000
+    expose:
+      - 3000
