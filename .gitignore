@@ -2,4 +2,7 @@ node_modules/
 markdown/
 logs/
 
+data/**.docx
+data/markdown/
+
 **/.env
