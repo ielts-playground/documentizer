@@ -1,0 +1,12 @@
+@host={{HOST}}
+
+### upload
+POST /upload
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+Content-Disposition: form-data; name="docx"; filename="test.docx"
+
+< ../data/test.docx
+--WebKitFormBoundary--
