@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 type RichTextEditorProps = {
-    original?: string;
+    markdown?: string;
     onChange?: (value: string) => void;
 };
 
@@ -17,10 +17,10 @@ export default function (props: RichTextEditorProps) {
     const [value, setValue] = useState<string>(undefined);
 
     useEffect(() => {
-        if (props.original) {
-            setValue(markdownToHtml(props.original));
+        if (props.markdown) {
+            setValue(markdownToHtml(props.markdown));
         }
-    }, [props.original]);
+    }, [props.markdown]);
 
     const quillModules = {
         toolbar: false,

@@ -8,6 +8,7 @@ export type ComponentType =
     | 'box'
     | 'list'
     | 'footnote'
+    | 'smart'
     | '';
 
 export type HeadingSize = 'h1' | 'h2' | 'h3' | 'h4';

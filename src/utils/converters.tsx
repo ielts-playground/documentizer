@@ -4,18 +4,63 @@ import { Converter } from 'showdown';
 const converter = new Converter();
 converter.setOption('simpleLineBreaks', false);
 
+export function safeHtml(html: string) {
+    return html
+        .replaceAll(/<img\s*.+?>/g, '<strong>[[image]]</strong>') // mark as an image
+        .replaceAll(/<strong>(\s|&nbsp;)+<\/strong>/g, ' ')
+        .replaceAll(/<em>(\s|&nbsp;)+<\/em>/g, ' ')
+        .replaceAll(
+            /<strong>(\s|&nbsp;)+(.+?)<\/strong>/g,
+            ' <strong>$2</strong>'
+        )
+        .replaceAll(
+            /<strong>(.+?)(\s|&nbsp;)+<\/strong>/g,
+            '<strong>$1</strong> '
+        )
+        .replaceAll(/<em>(\s|&nbsp;)+(.+?)<\/em>/g, ' <em>$2</em>')
+        .replaceAll(/<em>(.+?)(\s|&nbsp;)+<\/em>/g, '<em>$1</em> ')
+        .replaceAll(
+            /<strong>(\s|&nbsp;)+<em>(.+?)<\/em><\/strong>/g,
+            ' <strong><em>$2</em></strong>'
+        )
+        .replaceAll(
+            /<strong><em>(.+?)<\/em>(\s|&nbsp;)+<\/strong>/g,
+            '<strong><em>$1</em></strong> '
+        )
+        .replaceAll(
+            /<em>(\s|&nbsp;)+<strong><em>(.+?)<\/em><\/strong><\/em>/g,
+            ' <em><strong><em>$2</em></strong></em>'
+        )
+        .replaceAll(
+            /<em><strong><em>(.+?)<\/em><\/strong>(\s|&nbsp;)+<\/em>/g,
+            '<em><strong><em>$1</em></strong></em> '
+        )
+        .replaceAll(
+            /<p class=\"ql-align-center\">\s*(<strong>.+?<\/strong>)?\s*<\/p>/g,
+            '<p>$1 [[title]]</p>'
+        ) // mark as a title
+        .replaceAll(/(&nbsp;)+/g, ' ')
+        .replaceAll(/[^\S\n]/g, ' ')
+        .concat('<br>');
+}
+
+export function safeMarkdown(markdown: string) {
+    return markdown
+        .replaceAll(/\\\./g, '.')
+        .replaceAll(/·/g, '.')
+        .replaceAll(/…+/g, '...')
+        .replaceAll(/\*{2}(\d+)\*{0,2}\s*\.\.+\*{0,2}/g, '**[[$1]]**') // mark as a box
+        .replaceAll(/(\*+[A-Z]+?\*+)\s+/g, '$1 ')
+        .replaceAll(/(\*+\d+?\*+)\s+/g, '$1 ')
+        .replaceAll(/\.\.+/g, '.');
+}
+
 export function markdownToHtml(markdown: string) {
-    return converter.makeHtml(markdown);
+    return converter.makeHtml(safeMarkdown(markdown));
 }
 
 export function htmlToMarkdown(html: string) {
-    const safeHtml = html
-        .replaceAll(/<strong>\s+(.+)<\/strong>/g, ' <strong>$1</strong>')
-        .replaceAll(/<strong>(.+)\s+<\/strong>/g, '<strong>$1</strong> ')
-        .replaceAll(/<em>\s+(.+)<\/em>/g, ' <em>$1</em>')
-        .replaceAll(/<em>(.+)\s+<\/em>/g, '<em>$1</em> ')
-        .concat('<br>');
-    return converter.makeMarkdown(safeHtml);
+    return converter.makeMarkdown(safeHtml(html));
 }
 
 export function markdownToKeyValue(markdown: string) {

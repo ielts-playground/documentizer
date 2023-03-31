@@ -111,9 +111,9 @@ export default function (props: EditorProps) {
                             />
                         )}
                     </div>
-                    {['text'].includes(component.type) && (
+                    {['text', 'smart'].includes(component.type) && (
                         <RichTextInput
-                            original={component.value}
+                            markdown={component.value}
                             onChange={updateComponentValue}
                         />
                     )}
@@ -133,7 +133,7 @@ export default function (props: EditorProps) {
                         component.type
                     ) && (
                         <RichTextInput
-                            original={component.optionsInMarkdown}
+                            markdown={component.optionsInMarkdown}
                             onChange={updateComponentOptions}
                         />
                     )}

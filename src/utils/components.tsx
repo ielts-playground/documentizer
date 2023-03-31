@@ -23,16 +23,8 @@ export function allComponentTypes(): ComponentType[] {
         'box',
         'list',
         'footnote',
+        'smart',
     ];
-}
-
-export function isMarkdown(type: ComponentType | string) {
-    switch (type) {
-        case 'text':
-            return true;
-        default:
-            return false;
-    }
 }
 
 export function createComponent(
@@ -46,6 +38,7 @@ export function createComponent(
         case 'title':
             elements.push(<Title {...component} />);
             break;
+        case 'smart':
         case 'text':
             elements.push(<Text {...component} />);
             break;
