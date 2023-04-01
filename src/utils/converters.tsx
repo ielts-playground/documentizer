@@ -35,12 +35,25 @@ export function safeHtml(html: string) {
             /<em><strong><em>(.+?)<\/em><\/strong>(\s|&nbsp;)+<\/em>/g,
             '<em><strong><em>$1</em></strong></em> '
         )
+        .replaceAll(/(&nbsp;)+/g, ' ')
+        .replaceAll(/[^\S\n]/g, ' ')
+        .replaceAll(
+            /<p class=\"ql-align-center\">\s*(<strong><em>.+?<\/em><\/strong>)?\s*<\/p>/g,
+            '<p>$1 [[title]]</p>'
+        ) // mark as a title
         .replaceAll(
             /<p class=\"ql-align-center\">\s*(<strong>.+?<\/strong>)?\s*<\/p>/g,
             '<p>$1 [[title]]</p>'
         ) // mark as a title
-        .replaceAll(/(&nbsp;)+/g, ' ')
-        .replaceAll(/[^\S\n]/g, ' ')
+        .replaceAll(/<p>\s*\[\[title\]\]/g, '<br>')
+        .replaceAll(
+            /<p><strong><em>(questions\s+\d+\D+\d+)<\/em><\/strong>\s\[\[title\]\]<\/p>/gi,
+            '<p><strong><em>$1</em></strong></p>'
+        )
+        .replaceAll(
+            /<p><strong>(questions\s+\d+\D+\d+)<\/strong>\s\[\[title\]\]<\/p>/gi,
+            '<p><strong>$1</strong></p>'
+        )
         .concat('<br>');
 }
 

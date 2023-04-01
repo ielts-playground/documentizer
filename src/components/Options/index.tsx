@@ -1,43 +1,30 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Component, KeyValue } from '@types';
-import { Global } from '@utils/contexts';
+
+import styles from './styles.module.scss';
 
 type OptionsProps = Component<KeyValue> & {
     inQuestion?: boolean;
+    selected?: string;
 };
 
 export default function (props: OptionsProps) {
-    const [selected, setSelected] = useState<number>(undefined);
+    const [selected, setSelected] = useState<string>(undefined);
 
-    const mode = useContext(Global)['mode'] as string;
-
-    const style = {
-        marginRight: '5px',
-        marginBlock: '10px',
-        cursor: props.inQuestion ? 'pointer' : 'default',
-        padding: '5px',
-    };
+    useEffect(() => {
+        setSelected(props.selected);
+    }, [props.selected]);
 
     return (
-        <>
+        <span className={props.inQuestion ? styles.selectable : styles.normal}>
             {Object.keys(props.value || {}).map((key, index) => (
                 <div
-                    style={{
-                        ...style,
-                        border:
-                            props.inQuestion &&
-                            mode === 'answer' &&
-                            selected === index
-                                ? 'solid 3px red'
-                                : 'none',
-                    }}
+                    className={
+                        selected === key ? styles.selected : styles.unselected
+                    }
                     key={index}
                     onClick={() => {
-                        if (mode === 'answer') {
-                            setSelected(index);
-                        } else {
-                            setSelected(undefined);
-                        }
+                        setSelected(key);
                         if (props.onClick) {
                             props.onClick(key);
                         }
@@ -48,6 +35,6 @@ export default function (props: OptionsProps) {
                     <span>{props.value[key]}</span>
                 </div>
             ))}
-        </>
+        </span>
     );
 }

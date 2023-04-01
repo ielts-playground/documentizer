@@ -9,7 +9,6 @@ import Question from '@components/Question';
 import RichTextInput from '@components/RichTextInput';
 import Text from '@components/Text';
 import Title from '@components/Title';
-import Unknown from '@components/Unknown';
 
 export {
     Box,
@@ -23,5 +22,4 @@ export {
     RichTextInput,
     Text,
     Title,
-    Unknown,
 };

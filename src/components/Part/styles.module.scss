@@ -1,11 +1,5 @@
 @import '@styles/font';
 
-.header {
-    @include useFont;
-    height: 10vh;
-    margin: 4vh 4vh 0 4vh;
-}
-
 .container {
     @include useFont;
     display: flex;
@@ -18,12 +12,14 @@
     .pane {
         overflow: hidden;
         height: 80vh;
-        margin: 0 4vh 4vh 4vh;
+        margin: 0 0 4vh 4vh;
 
         .container {
             display: block;
             height: 100%;
             overflow-y: scroll;
+            padding-right: 30px;
+            text-align: justify;
         }
     }
 }

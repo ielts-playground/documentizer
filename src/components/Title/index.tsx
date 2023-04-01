@@ -24,5 +24,9 @@ function createTitle(size: HeadingSize, value: string) {
 
 export default function (props: TitleProps) {
     const { size, value } = props;
+    const match = (/\*(.+)\*/g.exec(value) || {})[1];
+    if (match) {
+        return <em>{createTitle(size, match)}</em>;
+    }
     return createTitle(size, value);
 }

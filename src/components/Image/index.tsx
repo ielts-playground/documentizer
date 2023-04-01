@@ -10,6 +10,7 @@ export default function (props: ImageProps) {
         marginRight: 'auto',
         marginBlock: '20px',
         maxWidth: '300px',
+        border: 'solid 1px black',
     } as CSSProperties;
 
     return (
@@ -17,8 +18,13 @@ export default function (props: ImageProps) {
             style={style}
             src={props.value}
             alt={props.kei}
-            width={props.size?.width}
-            height={props.size?.height}
+            width={props.size?.width || '200px'}
+            height={props.size?.height || '150px'}
+            onClick={() => {
+                if (props.onChange) {
+                    props.onChange(props.value);
+                }
+            }}
         />
     );
 }

@@ -8,6 +8,8 @@ const patterns = {
     answerToSelect: /\*+([A-Z])\*+\s*(.+)?\n*/g,
     writeAnswer: /\*\*(\d+)\*\*\s*(.+)?\n*/g,
     range: /\*+questions\s*(\d+)\D+(\d+)\*+\n+/gi,
+    options:
+        /\*+(true|yes)\*+\s+\**(.+?)\**\n+\*+(false|no)\*+\s+\**(.+?)\**\n+\*+(not given)\*+\s+\**(.+?)\**\n+/gi,
 };
 
 const types = {
@@ -27,6 +29,14 @@ const defaultComponent = {
     key: '',
     value: '',
     options: {},
+} as {
+    sort: number;
+    type: string;
+    key: string;
+    value: any;
+    options: {
+        [key: string]: string;
+    };
 };
 
 async function processSimpleFields(
@@ -279,12 +289,56 @@ async function processQuestionRanges(pieces = [defaultComponent]) {
     return (await Promise.all(processes)).flat();
 }
 
-async function processList(pieces = [defaultComponent]) {
-    return [];
+async function processOptions(pieces = [defaultComponent]) {
+    let currentRange: {
+        from: number;
+        to: number;
+    };
+    let options: {
+        [key: string]: string;
+    };
+    const processed = [];
+    for (const piece of pieces) {
+        if (piece.type === types.range) {
+            currentRange = {
+                from: Number(piece.value?.from),
+                to: Number(piece.value?.to),
+            };
+            options = null;
+        } else if (!piece.type && currentRange) {
+            for (const match of (piece.value as string)?.matchAll(
+                patterns.options
+            )) {
+                if (match[0]) {
+                    options = {
+                        [match[1]]: match[2],
+                        [match[3]]: match[4],
+                        [match[5]]: match[6],
+                    };
+                }
+            }
+        } else if (
+            piece.type === types.writeAnswer &&
+            currentRange &&
+            options
+        ) {
+            if (
+                Number(piece.key) >= currentRange.from &&
+                Number(piece.key) <= currentRange.to
+            ) {
+                piece.options = {
+                    ...options,
+                };
+                piece.type = types.selectAnswer;
+            }
+        }
+        processed.push(piece);
+    }
+    return Promise.resolve(processed);
 }
 
 async function clean(components = [defaultComponent]) {
-    return components.filter((c) => !!c.value);
+    return components.filter((c) => !!c.type || !!c.value);
 }
 
 async function sort(components = [defaultComponent], removeSort = true) {
@@ -328,7 +382,6 @@ function convertToComponents(components = [defaultComponent]) {
             };
         }
         if (c.type === types.range) {
-            console.log(c.value);
             return [
                 {
                     type: 'break',
@@ -358,7 +411,7 @@ function convertToComponents(components = [defaultComponent]) {
 
 export async function extract(markdown = '') {
     const initial = {
-        value: markdown,
+        value: markdown.replaceAll(/\n*(<br>)*\n*$/g, '').trim(),
         sort: 0,
     };
     return Promise.resolve([initial])
@@ -368,6 +421,7 @@ export async function extract(markdown = '') {
         .then(processBoxes)
         .then(processAnswerWritingQuestions)
         .then(processQuestionRanges)
+        .then(processOptions)
         .then(clean)
         .then(sort)
         .then(convertToComponents);

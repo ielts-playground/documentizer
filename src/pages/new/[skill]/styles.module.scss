@@ -1,0 +1,59 @@
+@import '@styles/font';
+
+@mixin withAction {
+    .action {
+        button {
+            padding: 15px 20px 15px 20px;
+            margin: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #999;
+            cursor: pointer;
+
+            &:hover {
+                scale: 120%;
+            }
+        }
+
+        .submit {
+            background-color: #62f15d;
+        }
+    }
+}
+
+.header {
+    @include useFont;
+
+    height: 10vh;
+    margin: 4vh 4vh 0 4vh;
+
+    span {
+        margin-inline: 5px;
+    }
+
+    .part {
+        cursor: pointer;
+        color: #999;
+    }
+}
+
+.container {
+    @include withAction;
+
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    opacity: 0.95;
+
+    * {
+        @include useFont;
+        font-size: large;
+    }
+}

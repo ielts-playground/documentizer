@@ -1,0 +1,28 @@
+@mixin common {
+    margin-right: 5px;
+    padding: 5px;
+
+    div {
+        margin-block: 20px;
+    }
+}
+
+.normal {
+    @include common;
+}
+
+.selectable {
+    @include common;
+
+    .selected {
+        color: red;
+    }
+
+    .unselected {
+        color: #000;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

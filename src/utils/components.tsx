@@ -9,8 +9,7 @@ import {
     Text,
     Title,
 } from '@components';
-import { AnyComponent, ComponentType, OptionsState } from '@types';
-import Unknown from '@components/Unknown';
+import { AnyComponent, ComponentType } from '@types';
 
 export function allComponentTypes(): ComponentType[] {
     return [
@@ -29,8 +28,7 @@ export function allComponentTypes(): ComponentType[] {
 
 export function createComponent(
     props: AnyComponent,
-    onChange: (value: string) => void,
-    { set, get, latest }: OptionsState
+    onChange: (value: string) => void
 ) {
     const elements = [] as ReactElement[];
     const component = { ...props, onChange } as AnyComponent;
@@ -38,7 +36,6 @@ export function createComponent(
         case 'title':
             elements.push(<Title {...component} />);
             break;
-        case 'smart':
         case 'text':
             elements.push(<Text {...component} />);
             break;
@@ -49,68 +46,42 @@ export function createComponent(
             elements.push(<Image {...component} />);
             break;
         case 'options':
-            set(component.kei, component.value);
             elements.push(<Options {...component} />);
             break;
         case 'footnote':
             elements.push(<Footnote {...component} />);
         case 'question':
-            if (typeof component.options === 'string') {
-                component.options = get(component.options) || latest();
-            }
             elements.push(<Question {...component} />);
-            if (!component.options || !Object.keys(component.options).length) {
-                elements.push(
-                    <Box
-                        kei={component.kei}
-                        onChange={onChange}
-                        inQuestion={true}
-                    />
-                );
-            }
             break;
         case 'list':
-            set(component.kei, component.options);
             elements.push(<List {...component} />);
             break;
         case 'break':
             elements.push(<div />);
             break;
         default:
-            elements.push(<Unknown {...component} />);
+            elements.push(<>{component.value}</>);
     }
     return {
-        created: component,
+        component,
         elements,
     };
 }
 
 export function createEditableComponent(
-    retriever: {
-        component: () => AnyComponent;
-        options: () => OptionsState;
-    },
+    props: AnyComponent,
     /**
      * Emits when the component is clicked on.
      */
-    onEdit: (selected: AnyComponent) => void,
+    onClick: (selected: AnyComponent) => void,
     /**
      * Emits when the component is selected or typed into.
      */
-    onChange: (value: string) => void,
-    /**
-     * Emits when the component is created.
-     */
-    onCreate: (component: AnyComponent) => void
+    onAnswer: (value: string) => void
 ) {
-    const { created, elements } = createComponent(
-        retriever.component(),
-        onChange,
-        retriever.options()
-    );
-    onCreate(created);
+    const { component, elements } = createComponent(props, onAnswer);
     return (
-        <span onClick={() => onEdit(retriever.component())}>
+        <span onClick={() => onClick(component)}>
             {elements.map((element, index) => (
                 <span key={index}>{element}</span>
             ))}
