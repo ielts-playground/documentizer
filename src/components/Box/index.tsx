@@ -1,5 +1,7 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Component } from '@types';
+
+import styles from './styles.module.scss';
 
 type BoxProps = Component<string> & {
     inQuestion?: boolean;
@@ -8,13 +10,6 @@ type BoxProps = Component<string> & {
 export default function (props: BoxProps) {
     const [value, setValue] = useState<string>(undefined);
 
-    const style = {
-        margin: '10px',
-        paddingBlock: '10px',
-        textAlign: 'center',
-        border: 'solid 3px',
-    } as CSSProperties;
-
     useEffect(() => {
         setValue(props.value);
     }, [props.value]);
@@ -22,10 +17,7 @@ export default function (props: BoxProps) {
     return (
         <>
             <input
-                style={{
-                    ...style,
-                    borderColor: !!value ? 'red' : 'black',
-                }}
+                className={!!value ? styles.notEmpty : styles.empty}
                 id={props.kei}
                 onChange={(e) => {
                     setValue(e.target.value);

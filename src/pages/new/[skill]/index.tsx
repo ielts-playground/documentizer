@@ -142,7 +142,9 @@ export default function () {
                             className={styles.part}
                             onClick={() => {
                                 setPart(num);
-                                setMode('edit');
+                                if (!state[num]?.markdown) {
+                                    setMode('edit');
+                                }
                             }}
                         >
                             {num}
@@ -171,7 +173,9 @@ export default function () {
                                         const element = document.getElementById(
                                             e.key
                                         );
-                                        element?.scrollIntoView();
+                                        element?.scrollIntoView({
+                                            behavior: 'smooth',
+                                        });
                                         element?.focus();
                                     }}
                                 >

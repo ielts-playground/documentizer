@@ -1,0 +1,19 @@
+@mixin common {
+    margin: 10px;
+    padding-block: 10px;
+    text-align: center;
+    border: solid 3px;
+
+    &:focus, &:hover {
+        scale: 120%;
+    }
+}
+
+.empty {
+    @include common;
+}
+
+.notEmpty {
+    @include common;
+    border-color: red;
+}

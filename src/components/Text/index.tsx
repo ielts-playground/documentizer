@@ -14,7 +14,6 @@ export default function (props: TextProps) {
         const html = renderToStaticMarkup(
             <MarkdownView markdown={props.value} />
         ) as string;
-        console.log(JSON.stringify(html));
         setValue(
             html // TODO: still not working when there're many <p>s inside a <div>
                 ?.replaceAll(/<div>(.+?)<\/div>/g, '$1')
