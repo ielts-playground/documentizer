@@ -5,6 +5,7 @@ export type ComponentType =
     | 'text'
     | 'options'
     | 'question'
+    | 'range'
     | 'box'
     | 'list'
     | 'footnote'

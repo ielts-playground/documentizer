@@ -19,7 +19,7 @@ export default function (props: ImageProps) {
         <img
             style={style}
             src={props.value}
-            alt={props.kei || 'Upload an image now!'}
+            alt={props.value ? props.kei : 'Upload an image now!'}
             width={props.size?.width || '200px'}
             height={props.size?.height || '150px'}
             onClick={() => {

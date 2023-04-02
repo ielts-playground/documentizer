@@ -7,7 +7,7 @@ const patterns = {
     selectAnswer: /\*\*(\d+)\*\*\s*(.+)?(\n+\*+[A-Z]\*+\s*.+)+\n*/g,
     answerToSelect: /\*+([A-Z])\*+\s*(.+)?\n*/g,
     writeAnswer: /\*\*(\d+)\*\*\s*(.+)?\n*/g,
-    range: /\*+questions\s*(\d+)\D+(\d+)\*+\n+/gi,
+    range: /\*+questions\s*(\d+)[\s\D]+(\d+)[^A-Za-z]*\*+\n+/gi,
     options:
         /\*+(true|yes)\*+\s+\**(.+?)\**\n+\*+(false|no)\*+\s+\**(.+?)\**\n+\*+(not given)\*+\s+\**(.+?)\**\n+/gi,
 };
@@ -42,7 +42,7 @@ const defaultComponent = {
 async function processSimpleFields(
     pieces = [defaultComponent],
     pattern = /.*/g,
-    type = 'title'
+    type = ''
 ) {
     const processes = [];
     pieces.forEach((component) => {
@@ -338,7 +338,17 @@ async function processOptions(pieces = [defaultComponent]) {
 }
 
 async function clean(components = [defaultComponent]) {
-    return components.filter((c) => !!c.type || !!c.value);
+    return components
+        .filter((c) => !!c.type || !!c.value)
+        .map((c) => {
+            if (c.type === types.image) {
+                return {
+                    ...c,
+                    key: String(c.sort),
+                };
+            }
+            return c;
+        });
 }
 
 async function sort(components = [defaultComponent], removeSort = true) {
@@ -382,22 +392,15 @@ function convertToComponents(components = [defaultComponent]) {
             };
         }
         if (c.type === types.range) {
-            return [
-                {
-                    type: 'break',
-                },
-                {
-                    type: 'text',
-                    value: `***Questions ${c.value['from']}-${c.value['to']}***`,
-                },
-                {
-                    type: 'break',
-                },
-            ];
+            return {
+                type: 'range',
+                value: `***Questions ${c.value['from']}-${c.value['to']}***`,
+            };
         }
         if (c.type === types.image) {
             return {
                 type: 'image',
+                kei: c.key,
             };
         }
         if (c.type === types.text || !c.type) {

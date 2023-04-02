@@ -27,9 +27,11 @@ export default function (props: RichTextEditorProps) {
     };
 
     const onChange = (html: string) => {
-        setValue(html);
+        const markdown = htmlToMarkdown(html);
+        const newHtml = markdownToHtml(markdown);
+        setValue(newHtml);
         if (props.onChange) {
-            props.onChange(htmlToMarkdown(html));
+            props.onChange(htmlToMarkdown(newHtml));
         }
     };
 

@@ -53,6 +53,11 @@ export function createComponent(
         case 'question':
             elements.push(<Question {...component} />);
             break;
+        case 'range':
+            elements.push(<div />);
+            elements.push(<Text {...component} />);
+            elements.push(<div />);
+            break;
         case 'list':
             elements.push(<List {...component} />);
             break;
