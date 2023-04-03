@@ -1,5 +1,29 @@
-import React from 'react';
+import Image from '@components/Image';
+import Upload from '@components/Upload';
+import React, { useState } from 'react';
 
 export default function () {
-    return <div>Hello World!</div>;
+    const [image, setImage] = useState<string>(undefined);
+    const [editing, setEditing] = useState<boolean>(false);
+
+    const cancel = () => {
+        setEditing(false);
+    };
+
+    const finish = (newImage: string) => {
+        setImage(newImage);
+        setEditing(false);
+    };
+
+    return (
+        <>
+            <Image
+                onChange={(_) => {
+                    setEditing(true);
+                }}
+                value={image}
+            />
+            {editing && <Upload onCancel={cancel} onFinish={finish} />}
+        </>
+    );
 }
