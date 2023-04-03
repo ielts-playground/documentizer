@@ -10,6 +10,8 @@ export default function (props: ImageProps) {
         marginRight: 'auto',
         marginBlock: '20px',
         maxWidth: '300px',
+        padding: '20px',
+        cursor: 'pointer',
         border: 'solid 1px black',
     } as CSSProperties;
 
@@ -17,7 +19,7 @@ export default function (props: ImageProps) {
         <img
             style={style}
             src={props.value}
-            alt={props.kei}
+            alt={props.value ? props.kei : 'Upload an image now!'}
             width={props.size?.width || '200px'}
             height={props.size?.height || '150px'}
             onClick={() => {

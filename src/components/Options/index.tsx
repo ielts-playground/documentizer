@@ -24,9 +24,10 @@ export default function (props: OptionsProps) {
                     }
                     key={index}
                     onClick={() => {
-                        setSelected(key);
+                        const deselected = selected === key;
+                        setSelected(deselected ? undefined : key);
                         if (props.onClick) {
-                            props.onClick(key);
+                            props.onClick(deselected ? undefined : key);
                         }
                     }}
                 >

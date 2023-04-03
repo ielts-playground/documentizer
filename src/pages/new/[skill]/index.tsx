@@ -2,7 +2,7 @@ import { Part, RichTextInput } from '@components';
 import { AnyComponent, KeyValue } from '@types';
 import { extract } from '@utils/extractors';
 import { useRouter } from 'next/router';
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { CSSProperties, ReactElement, useEffect, useState } from 'react';
 
 import styles from './styles.module.scss';
 
@@ -17,9 +17,10 @@ type State = {
 export default function () {
     const router = useRouter();
     const [state, setState] = useState<State>({});
-    const [mode, setMode] = useState<string>('edit');
     const [skill, setSkill] = useState<string>('reading');
-    const [part, setPart] = useState<number>(1);
+    const [part, setPart] = useState<number>(0);
+    const [audio, setAudio] = useState<File>(undefined);
+    const [modal, setModal] = useState<ReactElement>(undefined);
 
     useEffect(() => {
         const { skill } = router.query;
@@ -36,7 +37,14 @@ export default function () {
             };
         });
         setState(initial);
+        setPart(1);
     }, [skill]);
+
+    useEffect(() => {
+        if (!state[part]?.markdown) {
+            startEditing();
+        }
+    }, [part]);
 
     const parts = (exclude: number = 0) => {
         const allParts = [];
@@ -86,47 +94,81 @@ export default function () {
             answers: {},
             markdown,
         });
-        setMode('answer');
+        setModal(undefined);
     };
 
-    const click = (component: AnyComponent) => {};
+    const click = (component: AnyComponent) => {
+        if (component.type === 'image') {
+            startUpdatingImage(component.kei, component.value);
+        }
+    };
 
     const answer = (key: string, value: string) => {
-        if (mode === 'answer') {
-            updatePart(part, {
-                questions: state[part].questions.map((c) => {
-                    if (c.kei === key) {
-                        if (c.type === 'question') {
-                            return {
-                                ...c,
-                                answer: value,
-                            };
-                        }
-                        if (c.type === 'options') {
-                            return {
-                                ...c,
-                                selected: value,
-                            };
-                        }
-                        if (c.type === 'box') {
-                            return {
-                                ...c,
-                                value,
-                            };
-                        }
+        updatePart(part, {
+            questions: state[part].questions.map((c) => {
+                if (c.kei === key) {
+                    if (c.type === 'question') {
+                        return {
+                            ...c,
+                            answer: value,
+                        };
                     }
-                    return c;
-                }),
-                answers: {
-                    ...state[part].answers,
-                    [key]: value,
-                },
-            });
-        }
+                    if (c.type === 'options') {
+                        return {
+                            ...c,
+                            selected: value,
+                        };
+                    }
+                    if (c.type === 'box') {
+                        return {
+                            ...c,
+                            value,
+                        };
+                    }
+                }
+                return c;
+            }),
+            answers: {
+                ...state[part].answers,
+                [key]: value,
+            },
+        });
     };
 
     const submit = () => {
         // TODO: submit the questions and answers to our server.
+        alert('Not implemented yet!');
+    };
+
+    const startUpdatingAudio = () => {
+        // TODO: provide a view for updating audio.
+        alert('Not implemented yet!');
+    };
+
+    const startUpdatingImage = (key: string, oldValue: string) => {
+        // TODO: provide a view for updating image.
+        alert('Not implemented yet!');
+    };
+
+    const startEditing = () => {
+        setModal(
+            <>
+                <RichTextInput
+                    markdown={state[part]?.markdown}
+                    onChange={(markdown) => {
+                        updatePart(part, {
+                            markdown,
+                        });
+                    }}
+                />
+                <div className={styles.action}>
+                    <button onClick={() => setModal(undefined)}>cancel</button>
+                    <button className={styles.submit} onClick={() => update()}>
+                        save
+                    </button>
+                </div>
+            </>
+        );
     };
 
     return (
@@ -140,15 +182,35 @@ export default function () {
                         <span>|</span>
                         <span
                             className={styles.part}
-                            onClick={() => {
-                                setPart(num);
-                                setMode('edit');
-                            }}
+                            onClick={() => setPart(num)}
                         >
                             {num}
                         </span>
                     </span>
                 ))}
+                <span className={styles.right}>
+                    <span
+                        className={styles.edit}
+                        onClick={() => startEditing()}
+                    >
+                        EDIT
+                    </span>
+                    <span>|</span>
+                    {skill === 'listening' && (
+                        <>
+                            <span
+                                className={styles.edit}
+                                onClick={() => startUpdatingAudio()}
+                            >
+                                AUDIO
+                            </span>
+                            <span>|</span>
+                        </>
+                    )}
+                    <span className={styles.submit} onClick={() => submit()}>
+                        SUBMIT
+                    </span>
+                </span>
             </h1>
             <Part
                 skill={skill}
@@ -171,7 +233,9 @@ export default function () {
                                         const element = document.getElementById(
                                             e.key
                                         );
-                                        element?.scrollIntoView();
+                                        element?.scrollIntoView({
+                                            behavior: 'smooth',
+                                        });
                                         element?.focus();
                                     }}
                                 >
@@ -182,29 +246,7 @@ export default function () {
                     </>
                 }
             />
-            {mode === 'edit' && (
-                <div className={styles.container}>
-                    <RichTextInput
-                        markdown={state[part]?.markdown}
-                        onChange={(markdown) => {
-                            updatePart(part, {
-                                markdown,
-                            });
-                        }}
-                    />
-                    <div className={styles.action}>
-                        <button onClick={() => setMode('answer')}>
-                            Cancel
-                        </button>
-                        <button
-                            className={styles.submit}
-                            onClick={() => update()}
-                        >
-                            Save
-                        </button>
-                    </div>
-                </div>
-            )}
+            {modal && <div className={styles.container}>{modal}</div>}
         </>
     );
 }

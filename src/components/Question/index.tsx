@@ -19,9 +19,17 @@ export default function (props: QuestionProps) {
     }, [props]);
 
     return (
-        <span id={hasOptions ? props.kei : undefined}>
+        <div
+            id={hasOptions ? props.kei : undefined}
+            style={{
+                display: hasOptions ? 'block' : 'inline',
+                marginBlock: '20px',
+            }}
+        >
             <div style={{ display: 'block' }}></div>
-            <strong>{props.kei}</strong>
+            <h2 style={{ display: 'inline', marginRight: '20px' }}>
+                {props.kei}
+            </h2>
             <span style={{ marginLeft: '10px' }}></span>
             <span style={{ display: 'inline-block' }}>
                 <MarkdownView markdown={props.value} style={{ height: 0 }} />
@@ -38,6 +46,6 @@ export default function (props: QuestionProps) {
             {!hasOptions && (
                 <Box kei={props.kei} value={answer} onChange={props.onChange} />
             )}
-        </span>
+        </div>
     );
 }

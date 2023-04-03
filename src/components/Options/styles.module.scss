@@ -7,6 +7,13 @@
     }
 }
 
+@mixin boldOnHover {
+    &:hover {
+        cursor: pointer;
+        font-weight: bold;
+    }
+}
+
 .normal {
     @include common;
 }
@@ -15,14 +22,12 @@
     @include common;
 
     .selected {
+        @include boldOnHover;
         color: red;
     }
 
     .unselected {
+        @include boldOnHover;
         color: #000;
-
-        &:hover {
-            cursor: pointer;
-        }
     }
 }
