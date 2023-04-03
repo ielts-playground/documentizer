@@ -364,6 +364,12 @@ async function sort(components = [defaultComponent], removeSort = true) {
 
 function convertToComponents(components = [defaultComponent]) {
     return components.flatMap((c) => {
+        if (c.type === types.text || !c.type) {
+            return {
+                type: 'text',
+                value: c.value,
+            };
+        }
         if (c.type === types.title) {
             return {
                 type: 'title',
@@ -394,19 +400,13 @@ function convertToComponents(components = [defaultComponent]) {
         if (c.type === types.range) {
             return {
                 type: 'range',
-                value: `***Questions ${c.value['from']}-${c.value['to']}***`,
+                value: `<hr>\n\n## Questions ${c.value['from']}-${c.value['to']}`,
             };
         }
         if (c.type === types.image) {
             return {
                 type: 'image',
                 kei: c.key,
-            };
-        }
-        if (c.type === types.text || !c.type) {
-            return {
-                type: 'text',
-                value: c.value,
             };
         }
     }) as AnyComponent[];
