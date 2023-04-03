@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import MarkdownView from 'react-showdown';
-import { Component } from '@types';
+import { AnyComponent } from '@types';
 
 import styles from './styles.module.scss';
 
-type TextProps = Component<string> & {
+type TextProps = AnyComponent & {
     hasTextBefore?: boolean;
 };
 
@@ -16,19 +16,28 @@ export default function (props: TextProps) {
         const html = renderToStaticMarkup(
             <MarkdownView markdown={props.value} />
         ) as string;
-        setValue(
-            html
-                ?.replaceAll(/<div>([\S\s]+?)<\/div>/g, '$1')
-                ?.replaceAll(
-                    /<p><strong>(.+?)<\/strong><\/p>/g,
-                    '<br><strong>$1</strong><br>'
-                )
-                // ?.replaceAll(/^<p>(.+?)<\/p>$/g, '<span>$1</span>')
-                ?.replaceAll(/^<p>(.+?)<\/p>\n+/g, '<span>$1</span><br>')
-                ?.replaceAll(/\n+<p>(.+?)<\/p>$/g, '<br><span>$1</span>')
-                ?.replaceAll(/(<br>)+<p>(.+?)<\/p>$/g, '<br><span>$2</span>')
-                ?.replaceAll(/<p>(.+?)<\/p>/g, '<br><span>$1</span><br>')
-        );
+        if (props.type === 'range') {
+            setValue(html);
+        } else {
+            const matches = [];
+            for (const match of html.matchAll(
+                /<p>(.+?)<\/p>(\n|<br>|<br\/>)*/g
+            )) {
+                matches.push(`${match[1] || ''}${match[2] ? '<br>' : ''}`);
+            }
+            console.log(matches);
+            const paragraphs = [];
+            for (const match of matches) {
+                if (match) {
+                    const paragraph = match.replaceAll(
+                        /^<strong>(.+?)<\/strong>(<br>)*$/g,
+                        '<br><strong>$1</strong><br>'
+                    );
+                    paragraphs.push(`<span>${paragraph}</span>`);
+                }
+            }
+            setValue(paragraphs.join('<br>'));
+        }
     }, [props.value]);
 
     return (
