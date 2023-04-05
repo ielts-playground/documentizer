@@ -1,3 +1,5 @@
+import { createTestWithAudio } from '@apis';
+import { TestCreationRequest } from '@apis/types';
 import { Part, RichTextInput } from '@components';
 import { AnyComponent, KeyValue } from '@types';
 import { extract } from '@utils/extractors';
@@ -135,9 +137,35 @@ export default function () {
         });
     };
 
-    const submit = () => {
-        // TODO: submit the questions and answers to our server.
-        alert('Not implemented yet!');
+    const submit = async () => {
+        const content = {
+            skill,
+            components: [],
+            answers: [],
+        } as TestCreationRequest;
+        parts().forEach((num) => {
+            (state[num]?.questions || []).forEach((c) => {
+                content.components.push({
+                    ...c,
+                    part: num,
+                });
+            });
+            Object.keys(state[num]?.answers || {}).forEach((key) => {
+                content.answers.push({
+                    kei: key,
+                    value: (state[num]?.answers || {})[key],
+                    part: num,
+                });
+            });
+        });
+        try {
+            setModal(<>Submitting...</>);
+            await createTestWithAudio(content, audio);
+        } catch (err) {
+            console.log(err.message);
+        } finally {
+            setModal(undefined);
+        }
     };
 
     const startUpdatingAudio = () => {
