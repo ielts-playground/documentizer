@@ -2,6 +2,7 @@ import Box from '@components/Box';
 import Editor from '@components/Editor';
 import Footnote from '@components/Footnote';
 import Image from '@components/Image';
+import Audio from '@components/Audio';
 import List from '@components/List';
 import Options from '@components/Options';
 import Part from '@components/Part';
@@ -15,6 +16,7 @@ export {
     Editor,
     Footnote,
     Image,
+    Audio,
     List,
     Options,
     Part,

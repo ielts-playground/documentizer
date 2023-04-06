@@ -1,4 +1,6 @@
 import { Part, RichTextInput } from '@components';
+import UploadImage from '@components/UploadImage';
+import UploadAudio from '@components/UploadAudio';
 import { AnyComponent, KeyValue } from '@types';
 import { extract } from '@utils/extractors';
 import { useRouter } from 'next/router';
@@ -92,7 +94,7 @@ export default function () {
         updatePart(part, {
             questions: await extract(markdown),
             answers: {},
-            markdown,
+            markdown: markdown,
         });
         setModal(undefined);
     };
@@ -142,12 +144,55 @@ export default function () {
 
     const startUpdatingAudio = () => {
         // TODO: provide a view for updating audio.
-        alert('Not implemented yet!');
+        setModal(
+            <UploadAudio
+                audio={audio}
+                onCancel={() => {
+                    setModal(undefined);
+                }}
+                onFinish={(file) => {
+                    setAudio(file);
+                    setModal(undefined);
+                }}
+            />
+        );
     };
 
     const startUpdatingImage = (key: string, oldValue: string) => {
-        // TODO: provide a view for updating image.
-        alert('Not implemented yet!');
+        setModal(
+            <UploadImage
+                initialValue={oldValue}
+                onCancel={() => {
+                    setModal(undefined);
+                }}
+                onFinish={(newValue, width, height) => {
+                    const currentComponentsOfPart = state[part].questions;
+                    const newComponentsOfPart = [];
+                    for (const component of currentComponentsOfPart) {
+                        const newComponent = {
+                            ...component,
+                        };
+                        if (
+                            component.type === 'image' &&
+                            component.kei === key
+                        ) {
+                            newComponent.value = newValue;
+                            newComponent.size = {
+                                width,
+                                height,
+                            };
+                        }
+                        newComponentsOfPart.push(newComponent);
+                    }
+                    updatePart(part, {
+                        questions: newComponentsOfPart,
+                        answers: state[part].answers,
+                        markdown: state[part].markdown,
+                    });
+                    setModal(undefined);
+                }}
+            />
+        );
     };
 
     const startEditing = () => {
@@ -199,8 +244,10 @@ export default function () {
                     {skill === 'listening' && (
                         <>
                             <span
-                                className={styles.edit}
-                                onClick={() => startUpdatingAudio()}
+                                className={audio ? styles.saved : styles.edit}
+                                onClick={() => {
+                                    startUpdatingAudio();
+                                }}
                             >
                                 AUDIO
                             </span>

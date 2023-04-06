@@ -62,6 +62,15 @@ $submitColor: #4abb46c7;
             }
         }
 
+        .saved {
+            @include underlineOnHover;
+            color: #5c0b0b;
+
+            &:hover {
+                color: #000;
+            }
+        }
+
         .submit {
             @include underlineOnHover;
             color: $submitColor;

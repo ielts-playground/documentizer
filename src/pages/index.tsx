@@ -1,5 +1,5 @@
 import Image from '@components/Image';
-import Upload from '@components/Upload';
+import Upload from '@components/UploadImage';
 import React, { useState } from 'react';
 
 export default function () {
