@@ -2,9 +2,11 @@ import { createTestWithAudio } from '@apis';
 import { TestCreationRequest } from '@apis/types';
 import { Part, RichTextInput } from '@components';
 import { AnyComponent, KeyValue } from '@types';
+import { UNSAVED_VALIDITY_IN_MILLISECONDS, unsavedKey } from '@utils/constants';
 import { extract } from '@utils/extractors';
 import { useRouter } from 'next/router';
 import React, { CSSProperties, ReactElement, useEffect, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 
 import styles from './styles.module.scss';
 
@@ -23,6 +25,7 @@ export default function () {
     const [part, setPart] = useState<number>(0);
     const [audio, setAudio] = useState<File>(undefined);
     const [modal, setModal] = useState<ReactElement>(undefined);
+    const [submitted, setSubmitted] = useState<boolean>(false);
 
     useEffect(() => {
         const { skill } = router.query;
@@ -38,15 +41,44 @@ export default function () {
                 markdown: '',
             };
         });
-        setState(initial);
+        let unsaved: State;
+        try {
+            const key = unsavedKey(skill);
+            const { content, createdAt } = JSON.parse(
+                localStorage.getItem(key)
+            ) as {
+                content: State;
+                createdAt: number;
+            };
+            if (Date.now() < createdAt + UNSAVED_VALIDITY_IN_MILLISECONDS) {
+                unsaved = content;
+            } else {
+                localStorage.removeItem(key);
+            }
+        } catch {}
+        if (unsaved) {
+            setState(unsaved);
+        } else {
+            setState(initial);
+        }
         setPart(1);
+        startEditing();
     }, [skill]);
 
-    useEffect(() => {
-        if (!state[part]?.markdown) {
-            startEditing();
+    useBeforeunload(() => {
+        const key = unsavedKey(skill);
+        if (!submitted) {
+            localStorage.setItem(
+                key,
+                JSON.stringify({
+                    content: state,
+                    createdAt: Date.now(),
+                })
+            );
+        } else {
+            localStorage.removeItem(key);
         }
-    }, [part]);
+    }, [skill]);
 
     const parts = (exclude: number = 0) => {
         const allParts = [];
@@ -161,6 +193,8 @@ export default function () {
         try {
             setModal(<>Submitting...</>);
             await createTestWithAudio(content, audio);
+            setSubmitted(true);
+            router.push('/ok'); // TODO: use other redirected path
         } catch (err) {
             console.log(err.message);
         } finally {
