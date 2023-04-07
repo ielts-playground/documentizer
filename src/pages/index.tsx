@@ -1,29 +1,17 @@
-import Image from '@components/Image';
-import Upload from '@components/UploadImage';
-import React, { useState } from 'react';
+import { authenticate } from '@apis';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 
 export default function () {
-    const [image, setImage] = useState<string>(undefined);
-    const [editing, setEditing] = useState<boolean>(false);
+    const router = useRouter();
 
-    const cancel = () => {
-        setEditing(false);
-    };
+    useEffect(() => {
+        authenticate('tuanm', '123').then((ok) => {
+            if (ok) {
+                router.push('/new/reading');
+            }
+        });
+    }, []);
 
-    const finish = (newImage: string) => {
-        setImage(newImage);
-        setEditing(false);
-    };
-
-    return (
-        <>
-            <Image
-                onChange={(_) => {
-                    setEditing(true);
-                }}
-                value={image}
-            />
-            {editing && <Upload onCancel={cancel} onFinish={finish} />}
-        </>
-    );
+    return <div>Hello World!</div>;
 }

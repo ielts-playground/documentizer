@@ -54,7 +54,16 @@ export function createComponent(
             elements.push(<Question {...component} />);
             break;
         case 'range':
-            elements.push(<Text {...component} />);
+            const { from, to } = component.value || {};
+            const value = `<hr>\n\n## Questions ${from}-${to}`;
+            elements.push(
+                <Text
+                    {...{
+                        ...component,
+                        value,
+                    }}
+                />
+            );
             break;
         case 'list':
             elements.push(<List {...component} />);

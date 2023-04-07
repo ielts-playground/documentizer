@@ -25,7 +25,6 @@ export default function (props: TextProps) {
             )) {
                 matches.push(`${match[1] || ''}${match[2] ? '<br>' : ''}`);
             }
-            console.log(matches);
             const paragraphs = [];
             for (const match of matches) {
                 if (match) {

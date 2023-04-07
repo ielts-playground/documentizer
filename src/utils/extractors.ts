@@ -400,7 +400,7 @@ function convertToComponents(components = [defaultComponent]) {
         if (c.type === types.range) {
             return {
                 type: 'range',
-                value: `<hr>\n\n## Questions ${c.value['from']}-${c.value['to']}`,
+                value: c.value,
             };
         }
         if (c.type === types.image) {

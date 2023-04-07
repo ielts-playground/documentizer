@@ -1,10 +1,14 @@
+import { createTestWithAudio } from '@apis';
+import { TestCreationRequest } from '@apis/types';
 import { Part, RichTextInput } from '@components';
 import UploadImage from '@components/UploadImage';
 import UploadAudio from '@components/UploadAudio';
 import { AnyComponent, KeyValue } from '@types';
+import { UNSAVED_VALIDITY_IN_MILLISECONDS, unsavedKey } from '@utils/constants';
 import { extract } from '@utils/extractors';
 import { useRouter } from 'next/router';
 import React, { CSSProperties, ReactElement, useEffect, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 
 import styles from './styles.module.scss';
 
@@ -23,6 +27,7 @@ export default function () {
     const [part, setPart] = useState<number>(0);
     const [audio, setAudio] = useState<File>(undefined);
     const [modal, setModal] = useState<ReactElement>(undefined);
+    const [submitted, setSubmitted] = useState<boolean>(false);
 
     useEffect(() => {
         const { skill } = router.query;
@@ -38,15 +43,43 @@ export default function () {
                 markdown: '',
             };
         });
-        setState(initial);
+        let unsaved: State;
+        try {
+            const key = unsavedKey(skill);
+            const { content, createdAt } = JSON.parse(
+                localStorage.getItem(key)
+            ) as {
+                content: State;
+                createdAt: number;
+            };
+            if (Date.now() < createdAt + UNSAVED_VALIDITY_IN_MILLISECONDS) {
+                unsaved = content;
+            } else {
+                localStorage.removeItem(key);
+            }
+        } catch {}
+        if (unsaved) {
+            setState(unsaved);
+        } else {
+            setState(initial);
+        }
         setPart(1);
     }, [skill]);
 
-    useEffect(() => {
-        if (!state[part]?.markdown) {
-            startEditing();
+    useBeforeunload(() => {
+        const key = unsavedKey(skill);
+        if (!submitted) {
+            localStorage.setItem(
+                key,
+                JSON.stringify({
+                    content: state,
+                    createdAt: Date.now(),
+                })
+            );
+        } else {
+            localStorage.removeItem(key);
         }
-    }, [part]);
+    }, [skill]);
 
     const parts = (exclude: number = 0) => {
         const allParts = [];
@@ -89,16 +122,6 @@ export default function () {
         setState(newState);
     };
 
-    const update = async () => {
-        const markdown = state[part].markdown;
-        updatePart(part, {
-            questions: await extract(markdown),
-            answers: {},
-            markdown: markdown,
-        });
-        setModal(undefined);
-    };
-
     const click = (component: AnyComponent) => {
         if (component.type === 'image') {
             startUpdatingImage(component.kei, component.value);
@@ -137,9 +160,37 @@ export default function () {
         });
     };
 
-    const submit = () => {
-        // TODO: submit the questions and answers to our server.
-        alert('Not implemented yet!');
+    const submit = async () => {
+        const content = {
+            skill,
+            components: [],
+            answers: [],
+        } as TestCreationRequest;
+        parts().forEach((num) => {
+            (state[num]?.questions || []).forEach((c) => {
+                content.components.push({
+                    ...c,
+                    part: num,
+                });
+            });
+            Object.keys(state[num]?.answers || {}).forEach((key) => {
+                content.answers.push({
+                    kei: key,
+                    value: (state[num]?.answers || {})[key],
+                    part: num,
+                });
+            });
+        });
+        try {
+            setModal(<>Submitting...</>);
+            await createTestWithAudio(content, audio);
+            setSubmitted(true);
+            router.push('/ok'); // TODO: use other redirected path
+        } catch (err) {
+            console.log(err.message);
+        } finally {
+            setModal(undefined);
+        }
     };
 
     const startUpdatingAudio = () => {
@@ -200,18 +251,16 @@ export default function () {
             <>
                 <RichTextInput
                     markdown={state[part]?.markdown}
-                    onChange={(markdown) => {
+                    onCancel={() => setModal(undefined)}
+                    onFinish={async (markdown) => {
                         updatePart(part, {
+                            questions: await extract(markdown),
+                            answers: {},
                             markdown,
                         });
+                        setModal(undefined);
                     }}
                 />
-                <div className={styles.action}>
-                    <button onClick={() => setModal(undefined)}>cancel</button>
-                    <button className={styles.submit} onClick={() => update()}>
-                        save
-                    </button>
-                </div>
             </>
         );
     };

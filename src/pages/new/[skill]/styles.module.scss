@@ -2,28 +2,6 @@
 
 $submitColor: #4abb46c7;
 
-@mixin withAction {
-    .action {
-        button {
-            padding: 15px 20px 15px 20px;
-            margin: 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #999;
-            cursor: pointer;
-
-            &:hover {
-                scale: 120%;
-            }
-        }
-
-        .submit {
-            background-color: $submitColor;
-            color: #fff;
-        }
-    }
-}
-
 .header {
     @include useFont;
 
@@ -79,8 +57,6 @@ $submitColor: #4abb46c7;
 }
 
 .container {
-    @include withAction;
-
     display: flex;
     flex-direction: column;
     position: fixed;

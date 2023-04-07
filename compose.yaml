@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: .
+      network: host
+    image: documentizer:1.0
+    container_name: documentizer
+    ports:
+      - $HTTP_PORT:3000
