@@ -10,7 +10,8 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 type RichTextEditorProps = {
     markdown?: string;
-    onChange?: (value: string) => void;
+    onFinish?: (value: string) => void;
+    onCancel?: () => void;
 };
 
 export default function (props: RichTextEditorProps) {
@@ -26,23 +27,36 @@ export default function (props: RichTextEditorProps) {
         toolbar: false,
     };
 
-    const onChange = (html: string) => {
-        const markdown = htmlToMarkdown(html);
-        const newHtml = markdownToHtml(markdown);
-        setValue(newHtml);
-        if (props.onChange) {
-            props.onChange(htmlToMarkdown(newHtml));
+    const finish = () => {
+        if (props.onFinish) {
+            const markdown = htmlToMarkdown(value);
+            const html = markdownToHtml(markdown);
+            props.onFinish(htmlToMarkdown(html));
+        }
+    };
+
+    const cancel = () => {
+        if (props.onCancel) {
+            props.onCancel();
         }
     };
 
     return (
         <div className={styles.container}>
-            <ReactQuill
-                theme={'snow'}
-                modules={quillModules}
-                value={value}
-                onChange={onChange}
-            />
+            <div className={styles.editor}>
+                <ReactQuill
+                    theme={'snow'}
+                    modules={quillModules}
+                    value={value}
+                    onChange={setValue}
+                />
+            </div>
+            <div className={styles.action}>
+                <button onClick={() => cancel()}>cancel</button>
+                <button className={styles.submit} onClick={() => finish()}>
+                    save
+                </button>
+            </div>
         </div>
     );
 }

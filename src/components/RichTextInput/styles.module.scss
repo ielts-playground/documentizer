@@ -1,13 +1,46 @@
 @import '@styles/font';
 
+$submitColor: #4abb46ec;
+
+@mixin withAction {
+    .action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        button {
+            padding: 15px 20px 15px 20px;
+            margin: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #eee;
+            cursor: pointer;
+
+            &:hover {
+                scale: 120%;
+            }
+        }
+
+        .submit {
+            background-color: $submitColor;
+            color: #fff;
+        }
+    }
+}
+
 .container {
+    @include withAction;
+
     margin: 10px;
     padding: 20px;
     width: 80vw;
-    max-height: 60vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    background-color: #fff;
+
+    .editor {
+        max-height: 60vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        background-color: #fff;
+    }
 
     * {
         @include useFont;

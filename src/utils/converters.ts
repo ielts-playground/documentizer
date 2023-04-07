@@ -6,6 +6,9 @@ converter.setOption('simpleLineBreaks', false);
 
 export function safeHtml(html: string) {
     return html
+        .replaceAll(/\s+style=\".+?\"/g, '')
+        .replaceAll(/<span>\s*<\/span>/g, '')
+        .replaceAll(/<p>\s*<\/p>/g, '')
         .replaceAll(/<img\s*.+?>/g, '<strong>[[image]]</strong>') // mark as an image
         .replaceAll(/<strong>(\s|&nbsp;)+<\/strong>/g, ' ')
         .replaceAll(/<em>(\s|&nbsp;)+<\/em>/g, ' ')

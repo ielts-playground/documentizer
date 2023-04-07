@@ -62,7 +62,6 @@ export default function () {
             setState(initial);
         }
         setPart(1);
-        startEditing();
     }, [skill]);
 
     useBeforeunload(() => {
@@ -119,16 +118,6 @@ export default function () {
             newState[num][key] = changes[key];
         });
         setState(newState);
-    };
-
-    const update = async () => {
-        const markdown = state[part].markdown;
-        updatePart(part, {
-            questions: await extract(markdown),
-            answers: {},
-            markdown,
-        });
-        setModal(undefined);
     };
 
     const click = (component: AnyComponent) => {
@@ -217,18 +206,16 @@ export default function () {
             <>
                 <RichTextInput
                     markdown={state[part]?.markdown}
-                    onChange={(markdown) => {
+                    onCancel={() => setModal(undefined)}
+                    onFinish={async (markdown) => {
                         updatePart(part, {
+                            questions: await extract(markdown),
+                            answers: {},
                             markdown,
                         });
+                        setModal(undefined);
                     }}
                 />
-                <div className={styles.action}>
-                    <button onClick={() => setModal(undefined)}>cancel</button>
-                    <button className={styles.submit} onClick={() => update()}>
-                        save
-                    </button>
-                </div>
             </>
         );
     };
