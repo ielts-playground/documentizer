@@ -1,8 +1,6 @@
 import { createTestWithAudio } from '@apis';
 import { TestCreationRequest } from '@apis/types';
-import { Part, RichTextInput } from '@components';
-import UploadImage from '@components/UploadImage';
-import UploadAudio from '@components/UploadAudio';
+import { Part, RichTextInput, UploadAudio, UploadImage } from '@components';
 import { AnyComponent, KeyValue } from '@types';
 import { UNSAVED_VALIDITY_IN_MILLISECONDS, unsavedKey } from '@utils/constants';
 import { extract } from '@utils/extractors';
@@ -194,7 +192,6 @@ export default function () {
     };
 
     const startUpdatingAudio = () => {
-        // TODO: provide a view for updating audio.
         setModal(
             <UploadAudio
                 audio={audio}

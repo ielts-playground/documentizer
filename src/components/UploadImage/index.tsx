@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from './styles.module.scss';
 
 type UploadProps = {
     initialValue?: string;
@@ -26,18 +27,15 @@ export default function (props: UploadProps) {
     };
 
     function convertToBase64AndRender(e) {
-        {
-            const file = e.currentTarget.files.item(0);
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async (e) => {
-                const quality = 0.01;
-                const original = e.target.result.toString();
-                const reduced = await reduceImage(original, quality);
-                console.log(original.length, reduced.length);
-                updateImage(reduced);
-            };
-        }
+        const file = e.currentTarget.files.item(0);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async (e) => {
+            const quality = 0.01;
+            const original = e.target.result.toString();
+            const reduced = await reduceImage(original, quality);
+            updateImage(reduced);
+        };
     }
 
     const reduceImage = (original: string, quality: number) => {
@@ -70,15 +68,21 @@ export default function (props: UploadProps) {
     };
 
     return (
-        <>
-            <div>Choose your image</div>
+        <div className={styles.all}>
+            <div className={styles.guide}>Choose your image:</div>
             <input
+                className={styles.input}
                 type={'file'}
                 onChange={(e) => convertToBase64AndRender(e)}
             />
-            Preview: <img src={data} width={500} />
-            <button onClick={() => cancel()}>Cancel</button>
-            <button onClick={() => finish(data)}>Save</button>
-        </>
+            <div className={styles.guide}> Preview: </div>
+            <img src={data} width={500} />
+            <div className={styles.box}>
+                <button onClick={() => cancel()}>Cancel</button>
+                <button className={styles.submit} onClick={() => finish(data)}>
+                    Save
+                </button>
+            </div>
+        </div>
     );
 }

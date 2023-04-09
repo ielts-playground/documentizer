@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from './styles.module.scss';
 
 type UploadProps = {
     audio?: File;
@@ -31,17 +32,25 @@ export default function (props: UploadProps) {
         }
     };
 
+    const inputId = 'xxdasdasd';
+
     return (
-        <>
-            <div>Choose your audio file</div>
+        <div className={styles.all}>
+            <div className={styles.guide}>Choose your audio file:</div>
             <input
+                className={styles.input}
                 type={'file'}
                 accept={'audio/*'}
                 onChange={(e) => handleFileChange(e)}
             />
-            Test Audio: <audio controls src={audioUrl()} />
-            <button onClick={() => cancel()}>Cancel</button>
-            <button onClick={() => finish()}>Save</button>
-        </>
+            <div className={styles.guide}> Test Audio: </div>
+            <audio controls src={audioUrl()} />
+            <div className={styles.box}>
+                <button onClick={() => cancel()}>Cancel</button>
+                <button className={styles.submit} onClick={() => finish()}>
+                    Save
+                </button>
+            </div>
+        </div>
     );
 }
