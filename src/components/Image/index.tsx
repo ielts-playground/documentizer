@@ -9,7 +9,6 @@ export default function (props: ImageProps) {
         marginLeft: 'auto',
         marginRight: 'auto',
         marginBlock: '20px',
-        maxWidth: '300px',
         padding: '20px',
         cursor: 'pointer',
         border: 'solid 1px black',
@@ -20,8 +19,8 @@ export default function (props: ImageProps) {
             style={style}
             src={props.value}
             alt={props.value ? props.kei : 'Upload an image now!'}
-            width={props.size?.width || '200px'}
-            height={props.size?.height || '150px'}
+            width={(props.size?.width || 300) + 'px'}
+            height={(props.size?.height || 250) + 'px'}
             onClick={() => {
                 if (props.onChange) {
                     props.onChange(props.value);

@@ -1,0 +1,44 @@
+@import '@styles/font';
+$submitColor: #4abb46ec;
+
+.all{
+    @include useFont;
+
+    display:contents;
+
+    .box {
+        display: flex;
+        justify-content: center;
+    
+        button {
+            padding: 15px 20px 15px 20px;
+            margin: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #eee;
+            cursor: pointer;
+    
+            &:hover {
+                scale: 120%;
+            }
+        }
+    
+        .submit {
+            background-color: $submitColor;
+            color: #fff;
+        }
+    }
+    
+    .input {
+        border-radius: '10px';
+        border: '1px solid black';
+        background-color: rgb(255, 255, 255);
+        padding: '10px';
+    }
+    
+    .guide {
+        color: rgb(255, 251, 251);
+        text-align: 'center';
+        padding: 15px 20px 15px 20px;
+    }
+}

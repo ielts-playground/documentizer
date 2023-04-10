@@ -9,6 +9,8 @@ import Question from '@components/Question';
 import RichTextInput from '@components/RichTextInput';
 import Text from '@components/Text';
 import Title from '@components/Title';
+import UploadAudio from '@components/UploadAudio';
+import UploadImage from '@components/UploadImage';
 
 export {
     Box,
@@ -22,4 +24,6 @@ export {
     RichTextInput,
     Text,
     Title,
+    UploadAudio,
+    UploadImage,
 };
