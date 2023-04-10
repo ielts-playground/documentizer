@@ -127,35 +127,36 @@ export default function () {
     };
 
     const answer = (key: string, value: string) => {
-        updatePart(part, {
-            questions: state[part].questions.map((c) => {
-                if (c.kei === key) {
-                    if (c.type === 'question') {
-                        return {
-                            ...c,
-                            answer: value,
-                        };
+        state[part] &&
+            updatePart(part, {
+                questions: state[part].questions.map((c) => {
+                    if (c.kei === key) {
+                        if (c.type === 'question') {
+                            return {
+                                ...c,
+                                answer: value,
+                            };
+                        }
+                        if (c.type === 'options') {
+                            return {
+                                ...c,
+                                selected: value,
+                            };
+                        }
+                        if (c.type === 'box') {
+                            return {
+                                ...c,
+                                value,
+                            };
+                        }
                     }
-                    if (c.type === 'options') {
-                        return {
-                            ...c,
-                            selected: value,
-                        };
-                    }
-                    if (c.type === 'box') {
-                        return {
-                            ...c,
-                            value,
-                        };
-                    }
-                }
-                return c;
-            }),
-            answers: {
-                ...state[part].answers,
-                [key]: value,
-            },
-        });
+                    return c;
+                }),
+                answers: {
+                    ...state[part].answers,
+                    [key]: value,
+                },
+            });
     };
 
     const submit = async () => {
