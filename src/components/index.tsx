@@ -1,5 +1,4 @@
 import Box from '@components/Box';
-import Editor from '@components/Editor';
 import Footnote from '@components/Footnote';
 import Image from '@components/Image';
 import List from '@components/List';
@@ -14,7 +13,6 @@ import UploadImage from '@components/UploadImage';
 
 export {
     Box,
-    Editor,
     Footnote,
     Image,
     List,
