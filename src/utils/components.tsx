@@ -54,8 +54,15 @@ export function createComponent(
             elements.push(<Question {...component} />);
             break;
         case 'range':
-            const { from, to } = component.value || {};
-            const value = `<hr>\n\n## Questions ${from}-${to}`;
+            const { from, to, and } = component.value || {};
+            let value = `<hr>\n\n## Questions ${from}-${to}`;
+            if (!!and) {
+                let side = and;
+                while (side) {
+                    value = value.concat(` and ${side.from}-${side.to}`);
+                    side = side.and;
+                }
+            }
             elements.push(
                 <Text
                     {...{

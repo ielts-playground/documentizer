@@ -251,8 +251,9 @@ export default function () {
                     markdown={state[part]?.markdown}
                     onCancel={() => setModal(undefined)}
                     onFinish={async (markdown) => {
+                        const questions = await extract(markdown);
                         updatePart(part, {
-                            questions: await extract(markdown),
+                            questions,
                             answers: {},
                             markdown,
                         });

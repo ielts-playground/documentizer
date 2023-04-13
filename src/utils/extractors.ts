@@ -4,10 +4,14 @@ const patterns = {
     box: /\*\*\[\[(\d+)?\]\]\*\*/g,
     title: /\*\*(.+)?\*\*\s*\[\[title\]\]\n*/g,
     image: /\*\*\[\[image\]\]\*\*\n*/g,
-    selectAnswer: /\*\*(\d+)\*\*\s*(.+)?(\n+\*+[A-Z]\*+\s*.+)+\n*/g,
+    selectAnswer:
+        /\*\*(\d+|\d+[\s\D]+\d+)\*\*\s*(.+)?(\n+\*+[A-Z]\*+\s*.+)+\n*/g,
+    questionNumber: /(\d+)/g,
+    questionRange: /(\d+)[\s\D]+(\d+)/g,
     answerToSelect: /\*+([A-Z])\*+\s*(.+)?\n*/g,
     writeAnswer: /\*\*(\d+)\*\*\s*(.+)?\n*/g,
-    range: /\*+questions\s*(\d+)[\s\D]+(\d+)[^A-Za-z]*\*+\n+/gi,
+    range: /\*+questions\s*(\d+)[\s\D]+(\d+)((\s*and\s*\d+[\s\D]+\d+)*)[^A-Za-z]*\*+\n+/gi,
+    sideRange: /\s*(\d+)[\s\D]+(\d+)(\s*.*)/gi,
     options:
         /\*+(true|yes)\*+\s+\**(.+?)\**\n+\*+(false|no)\*+\s+\**(.+?)\**\n+\*+(not given)\*+\s+\**(.+?)\**\n+/gi,
 };
@@ -21,6 +25,7 @@ const types = {
     writeAnswer: 'question-box',
     range: 'question-range',
     list: 'list',
+    multipleAnswer: 'multiple-answer',
 };
 
 const defaultComponent = {
@@ -37,6 +42,7 @@ const defaultComponent = {
     options: {
         [key: string]: string;
     };
+    size: any;
 };
 
 async function processSimpleFields(
@@ -138,11 +144,33 @@ async function processAnswerSelectingQuestions(pieces = [defaultComponent]) {
                 (async () => {
                     const matches = [];
                     for (const match of piece.matchAll(patterns.selectAnswer)) {
-                        matches.push({
-                            text: match[0],
-                            key: match[1],
-                            value: match[2],
-                        });
+                        if (match[1]) {
+                            let from: number;
+                            let to: number;
+                            for (const numberMatch of (
+                                match[1] as string
+                            ).matchAll(patterns.questionNumber)) {
+                                if (numberMatch[1]) {
+                                    from = Number(numberMatch[1]);
+                                }
+                            }
+                            for (const rangeMatch of (
+                                match[1] as string
+                            ).matchAll(patterns.questionRange)) {
+                                if (rangeMatch[1]) {
+                                    from = Number(rangeMatch[1]);
+                                }
+                                if (rangeMatch[2]) {
+                                    to = Number(rangeMatch[2]);
+                                }
+                            }
+                            matches.push({
+                                text: match[0],
+                                size: !!to ? to - from + 1 : undefined,
+                                key: !to ? from : `${from}-${to}`,
+                                value: match[2],
+                            });
+                        }
                     }
                     const processed = [];
                     let text = piece;
@@ -155,6 +183,7 @@ async function processAnswerSelectingQuestions(pieces = [defaultComponent]) {
                         });
                         processed.push({
                             type: types.selectAnswer,
+                            size: match.size,
                             key: match.key,
                             value: match.value,
                             options: await processSeletableAnswers(match.text),
@@ -251,12 +280,45 @@ async function processQuestionRanges(pieces = [defaultComponent]) {
                 (async () => {
                     const matches = [];
                     for (const match of piece.matchAll(patterns.range)) {
+                        const value = {
+                            from: Number(match[1]),
+                            to: Number(match[2]),
+                            and: undefined,
+                        };
+                        if (!!match[3]) {
+                            const side = [];
+                            let sideText = match[3] as string;
+                            while (!!sideText) {
+                                for (const sideMatch of sideText.matchAll(
+                                    patterns.sideRange
+                                )) {
+                                    if (sideMatch) {
+                                        side.push({
+                                            from: sideMatch[1],
+                                            to: sideMatch[2],
+                                        });
+                                    }
+                                    sideText = sideMatch
+                                        ? sideMatch[3]
+                                        : undefined;
+                                }
+                            }
+                            let and = undefined;
+                            for (let i = side.length - 1; i >= 0; i--) {
+                                if (!and) {
+                                    and = side[i];
+                                } else {
+                                    and = {
+                                        ...side[i],
+                                        and,
+                                    };
+                                }
+                            }
+                            value.and = and;
+                        }
                         matches.push({
                             text: match[0],
-                            value: {
-                                from: Number(match[1]),
-                                to: Number(match[2]),
-                            },
+                            value,
                         });
                     }
                     const processed = [];
@@ -385,6 +447,7 @@ function convertToComponents(components = [defaultComponent]) {
         if (c.type === types.selectAnswer) {
             return {
                 type: 'question',
+                size: c.size,
                 kei: c.key,
                 value: c.value,
                 options: c.options,

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import MarkdownView from 'react-showdown';
 
 import { Box, Options } from '@components';
-import { Component, KeyValue, WithOptions } from '@types';
+import { Component, KeyValue, WithOptions, WithSize } from '@types';
 
 type QuestionProps = Component<string> &
+    WithSize<number> &
     WithOptions<KeyValue> & {
         answer?: string;
     };
@@ -41,6 +42,7 @@ export default function (props: QuestionProps) {
                     onClick={props.onChange}
                     inQuestion={true}
                     selected={answer}
+                    maxSelections={props.size}
                 />
             )}
             {!hasOptions && (
