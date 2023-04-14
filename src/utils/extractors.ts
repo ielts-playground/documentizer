@@ -10,7 +10,7 @@ const patterns = {
     questionRange: /(\d+)[\s\D]+(\d+)/g,
     answerToSelect: /\*+([A-Z])\*+\s*(.+)?\n*/g,
     writeAnswer: /\*\*(\d+)\*\*\s*(.+)?\n*/g,
-    range: /\*+questions\s*(\d+)[\s\D]+(\d+)((\s*and\s*\d+[\s\D]+\d+)*)[^A-Za-z]*\*+\n+/gi,
+    range: /\*{2,3}questions\s*(\d+)[\s\D]+(\d+)((\s*and\s*\d+[\s\D]+\d+)*)[^A-Za-z]*\*{2,3}\n+/gi,
     sideRange: /\s*(\d+)[\s\D]+(\d+)(\s*.*)/gi,
     options:
         /\*+(true|yes)\*+\s+\**(.+?)\**\n+\*+(false|no)\*+\s+\**(.+?)\**\n+\*+(not given)\*+\s+\**(.+?)\**\n+/gi,
@@ -401,7 +401,7 @@ async function processOptions(pieces = [defaultComponent]) {
 
 async function clean(components = [defaultComponent]) {
     return components
-        .filter((c) => !!c.type || !!c.value)
+        .filter((c) => !!c.type && !(c.type === types.text && !c.value))
         .map((c) => {
             if (c.type === types.image) {
                 return {
