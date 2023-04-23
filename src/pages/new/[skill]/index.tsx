@@ -15,7 +15,10 @@ type State = {
     [key: number]: {
         questions: AnyComponent[];
         answers: KeyValue;
-        markdown: string;
+        markdown: {
+            left: string;
+            right: string;
+        };
     };
 };
 
@@ -46,7 +49,10 @@ export default function () {
             initial[num] = {
                 questions: [],
                 answers: {},
-                markdown: '',
+                markdown: {
+                    left: '',
+                    right: '',
+                },
             };
         });
         let unsaved: State;
@@ -254,24 +260,66 @@ export default function () {
         );
     };
 
-    const startEditing = () => {
-        setModal(
-            <>
-                <RichTextInput
-                    markdown={state[part]?.markdown}
-                    onCancel={() => setModal(undefined)}
-                    onFinish={async (markdown) => {
-                        const questions = await extract(markdown);
-                        updatePart(part, {
-                            questions,
-                            answers: {},
-                            markdown,
-                        });
-                        setModal(undefined);
-                    }}
-                />
-            </>
-        );
+    const startEditing = (position: number = 0) => {
+        let left = (state[part]?.questions || []).filter((c) => !c.position);
+        let right = (state[part]?.questions || []).filter((c) => !!c.position);
+        if (!position) {
+            setModal(
+                <>
+                    <RichTextInput
+                        markdown={state[part]?.markdown?.left}
+                        onCancel={() => setModal(undefined)}
+                        onFinish={async (markdown) => {
+                            const questions = (await extract(markdown)).map(
+                                (c) => {
+                                    return {
+                                        ...c,
+                                        position: 0,
+                                    };
+                                }
+                            );
+                            updatePart(part, {
+                                questions: [...questions, ...right],
+                                answers: {},
+                                markdown: {
+                                    left: markdown,
+                                    right: state[part]?.markdown?.right,
+                                },
+                            });
+                            setModal(undefined);
+                        }}
+                    />
+                </>
+            );
+        } else {
+            setModal(
+                <>
+                    <RichTextInput
+                        markdown={state[part]?.markdown?.right}
+                        onCancel={() => setModal(undefined)}
+                        onFinish={async (markdown) => {
+                            const questions = (await extract(markdown)).map(
+                                (c) => {
+                                    return {
+                                        ...c,
+                                        position: 1,
+                                    };
+                                }
+                            );
+                            updatePart(part, {
+                                questions: [...left, ...questions],
+                                answers: {},
+                                markdown: {
+                                    left: state[part]?.markdown?.left,
+                                    right: markdown,
+                                },
+                            });
+                            setModal(undefined);
+                        }}
+                    />
+                </>
+            );
+        }
     };
 
     const manualEditing = () => {
@@ -309,9 +357,20 @@ export default function () {
                         className={styles.edit}
                         onClick={() => startEditing()}
                     >
-                        EDIT
+                        {skill === 'reading' ? 'EDIT PASSAGE' : 'EDIT'}
                     </span>
                     <span>|</span>
+                    {skill === 'reading' && (
+                        <>
+                            <span
+                                className={styles.edit}
+                                onClick={() => startEditing(1)}
+                            >
+                                EDIT QUESTIONS
+                            </span>
+                            <span>|</span>
+                        </>
+                    )}
                     {skill === 'listening' && (
                         <>
                             <span

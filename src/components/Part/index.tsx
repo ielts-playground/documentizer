@@ -39,7 +39,7 @@ export default function (props: PartProps) {
         };
         setComponents([
             createPane((c) => !c.position),
-            createPane((c) => c.position === 1),
+            createPane((c) => !!c.position),
         ]);
     }, [JSON.stringify(props.components)]);
 

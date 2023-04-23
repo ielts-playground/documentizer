@@ -401,7 +401,11 @@ async function processOptions(pieces = [defaultComponent]) {
 
 async function clean(components = [defaultComponent]) {
     return components
-        .filter((c) => !!c.type && !(c.type === types.text && !c.value))
+        .filter(
+            (c) =>
+                (!!c.type && !(c.type === types.text && !c.value)) ||
+                (!c.type && !!c.value)
+        )
         .map((c) => {
             if (c.type === types.image) {
                 return {
