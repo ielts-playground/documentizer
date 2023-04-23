@@ -1,0 +1,57 @@
+@import "@styles/font";
+$submitColor: #4abb46ec;
+
+.all {
+  @include useFont;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 400px;
+  height: 290px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+
+  .box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .input {
+      width: 200px;
+      height: 30px;
+      border-radius: "10px";
+      border: "1px solid black";
+      background-color: rgb(255, 255, 255);
+      margin: 10px;
+      padding: "10px";
+
+      &:focus {
+        outline: none;
+        border-color: #232a2e;
+        box-shadow: 0 0 5px #232a2e;
+      }
+    }
+
+    .button {
+      padding: 15px 20px 15px 20px;
+      margin: 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: $submitColor;
+      color: #fff;
+  
+      &:hover {
+        scale: 120%;
+      }
+    }
+  }
+}

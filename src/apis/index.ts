@@ -48,3 +48,7 @@ export async function createTestWithAudio(
         })
     ).data;
 }
+
+export async function ping() {
+    await api.default.get('/users');
+}

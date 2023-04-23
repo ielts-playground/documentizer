@@ -1,0 +1,39 @@
+@import "@styles/font";
+$submitColor: #4abb46ec;
+
+.all {
+  @include useFont;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 400px;
+  height: 290px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+
+  .box {
+    text-align: center;
+    display: inline-block;
+    
+    button {
+      padding: 15px 20px 15px 20px;
+      margin: 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: $submitColor;
+      color: #fff;
+  
+      &:hover {
+        scale: 120%;
+      }
+    }
+  }
+}
