@@ -50,8 +50,8 @@ export default function (props: PartProps) {
                 split={'vertical'}
                 sizes={
                     !!components[0]?.length && !!components[1]?.length
-                        ? ['47%', '47%', '5%']
-                        : ['95%', 'auto', '5%']
+                        ? ['45%', '45%', '10%']
+                        : ['90%', 'auto', '10%']
                 }
                 sashRender={undefined}
                 onChange={undefined}

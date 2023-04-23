@@ -1,3 +1,4 @@
+import { ping } from '@apis';
 import { createTestWithAudio } from '@apis';
 import { TestCreationRequest } from '@apis/types';
 import { Part, RichTextInput, UploadAudio, UploadImage } from '@components';
@@ -31,6 +32,13 @@ export default function () {
         const { skill } = router.query;
         setSkill(skill as string);
     }, [router]);
+
+    useEffect(() => {
+        const redirect = encodeURIComponent(window.location.pathname);
+        ping().catch(() => {
+            router.push(`/log-in?redirect=${redirect}`);
+        });
+    }, []);
 
     useEffect(() => {
         const initial = {} as State;
@@ -127,6 +135,8 @@ export default function () {
     };
 
     const answer = (key: string, value: string) => {
+        const component = state[part].questions.find((c) => c.kei === key);
+        if (!['question', 'options', 'box'].includes(component.type)) return;
         state[part] &&
             updatePart(part, {
                 questions: state[part].questions.map((c) => {
@@ -184,7 +194,7 @@ export default function () {
             setModal(<>Submitting...</>);
             await createTestWithAudio(content, audio);
             setSubmitted(true);
-            router.push('/ok'); // TODO: use other redirected path
+            router.push('/redirect'); // TODO: use other redirected path
         } catch (err) {
             console.log(err.message);
         } finally {
@@ -264,6 +274,10 @@ export default function () {
         );
     };
 
+    const manualEditing = () => {
+        router.push(`/new/${skill}/manual`);
+    };
+
     return (
         <>
             <h1 className={styles.header}>
@@ -282,6 +296,15 @@ export default function () {
                     </span>
                 ))}
                 <span className={styles.right}>
+                    <>
+                        <span
+                            className={styles.edit}
+                            onClick={() => manualEditing()}
+                        >
+                            MANUAL
+                        </span>
+                        <span>|</span>
+                    </>
                     <span
                         className={styles.edit}
                         onClick={() => startEditing()}

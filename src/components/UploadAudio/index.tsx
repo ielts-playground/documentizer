@@ -32,8 +32,6 @@ export default function (props: UploadProps) {
         }
     };
 
-    const inputId = 'xxdasdasd';
-
     return (
         <div className={styles.all}>
             <div className={styles.guide}>Choose your audio file:</div>
