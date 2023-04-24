@@ -10,8 +10,8 @@ $submitColor: #4abb46ec;
   bottom: 0;
   left: 0;
   margin: auto;
-  width: 400px;
-  height: 290px;
+  width: 500px;
+  height: 400px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -20,9 +20,13 @@ $submitColor: #4abb46ec;
 
   .box {
     text-align: center;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     
     button {
+      width: 200px;
+      height: 50px;
       padding: 15px 20px 15px 20px;
       margin: 20px;
       border: none;

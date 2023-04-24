@@ -52,3 +52,18 @@ export async function createTestWithAudio(
 export async function ping() {
     await api.default.get('/users');
 }
+
+/**
+ * Registers a user.
+ * @param userRegister the user's info.
+ */
+export async function createUser(userRegister: any) {
+    const body = {
+        email: userRegister.email,
+        firstName: userRegister.firstName,
+        lastName: userRegister.lastName,
+        password: userRegister.password,
+        username: userRegister.username,
+    };
+    await api.default.post('/register', body);
+}
