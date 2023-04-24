@@ -1,4 +1,4 @@
-import { authenticate } from '@apis';
+import { ping } from '@apis';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
@@ -6,12 +6,14 @@ export default function () {
     const router = useRouter();
 
     useEffect(() => {
-        authenticate('tuanm', '123').then((ok) => {
-            if (ok) {
-                router.push('/new/reading');
-            }
-        });
+        ping()
+            .then(() => {
+                router.push('/redirect');
+            })
+            .catch((_) => {
+                router.push('/log-in');
+            });
     }, []);
 
-    return <div>Hello World!</div>;
+    return <div>Loading...</div>;
 }

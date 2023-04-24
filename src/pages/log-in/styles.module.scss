@@ -40,14 +40,23 @@ $submitColor: #4abb46ec;
       }
     }
 
-    .button {
+    @mixin button {
       padding: 15px 20px 15px 20px;
       margin: 20px;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
       background-color: $submitColor;
       color: #fff;
+    }
+
+    .disabledButton {
+      @include button;
+      opacity: 0.5;
+    }
+
+    .button {
+      @include button;
+      cursor: pointer;
   
       &:hover {
         scale: 120%;

@@ -101,12 +101,17 @@ export default function () {
                 <p id="authenticated" hidden>
                     Waiting for a second
                 </p>
-                <button
-                    className={styles.button}
-                    onClick={(_) => handleSubmit(_)}
-                >
-                    Log in
-                </button>
+                {user?.username && user?.password && (
+                    <button
+                        className={styles.button}
+                        onClick={(_) => handleSubmit(_)}
+                    >
+                        Log in
+                    </button>
+                )}
+                {(!user?.username || !user?.password) && (
+                    <button className={styles.disabledButton}>Log in</button>
+                )}
             </div>
         </div>
     );

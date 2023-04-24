@@ -31,6 +31,10 @@ export default function () {
         }
     };
 
+    const createUser = () => {
+        router.push('/register');
+    };
+
     return (
         <div className={styles.all}>
             <div className={styles.box}>
@@ -45,6 +49,9 @@ export default function () {
                 </button>
                 <button name="writing" onClick={(e) => handleButtonClick(e)}>
                     WRITING
+                </button>
+                <button onClick={(e) => createUser()}>
+                    Create user's account
                 </button>
             </div>
         </div>
