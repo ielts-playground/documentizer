@@ -481,7 +481,10 @@ function convertToComponents(components = [defaultComponent]) {
 
 export async function extract(markdown = '') {
     const initial = {
-        value: markdown.replaceAll(/\n*(<br>)*\n*$/g, '').trim(),
+        value: markdown
+            .replaceAll(/(\n\n)+/g, '\n\n')
+            .replaceAll(/(\n)*(<br>)*(\n)*$/g, '')
+            .trim(),
         sort: 0,
     };
     return Promise.resolve([initial])
