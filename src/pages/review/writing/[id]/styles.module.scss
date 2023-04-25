@@ -1,0 +1,63 @@
+@import '@styles/font';
+
+$submitColor: #4abb46c7;
+
+.container {
+    input {
+        @include useFont;
+    }
+}
+
+.header {
+    @include useFont;
+
+    height: 10vh;
+    margin: 4vh 4vh 0 4vh;
+
+    span {
+        margin-inline: 5px;
+    }
+
+    @mixin underlineOnHover {
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+
+    .part {
+        @include underlineOnHover;
+        color: #999;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    .right {
+        float: right;
+
+        .edit {
+            @include underlineOnHover;
+            color: #999;
+
+            &:hover {
+                color: #000;
+            }
+        }
+
+        .saved {
+            @include underlineOnHover;
+            color: #ff0d0d;
+
+            &:hover {
+                color: #000;
+            }
+        }
+
+        .submit {
+            @include underlineOnHover;
+            color: $submitColor;
+        }
+    }
+}

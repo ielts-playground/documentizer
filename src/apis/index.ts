@@ -1,3 +1,4 @@
+import { AnyComponent, KeyValue } from '@types';
 import api, { cookies } from './base';
 import { TestCreationRequest, TestCreationResponse } from './types';
 
@@ -66,4 +67,26 @@ export async function createUser(userRegister: any) {
         username: userRegister.username,
     };
     await api.default.post('/register', body);
+}
+
+/**
+ * Retrieves a writing test for a specific examination.
+ * @param examId the examination's id.
+ */
+export async function retrieveWritingTest(examId: number) {
+    return (await api.default.get(`/exam/${examId}/test/writing`)).data as {
+        examId: number;
+        components: AnyComponent[];
+    };
+}
+
+/**
+ * Retrieves a writing examination's answers.
+ * @param examId the examination's id.
+ */
+export async function retrieveWritingAnswers(examId: number) {
+    return (await api.default.get(`/exam/${examId}/answer/writing`)).data as {
+        examId: number;
+        answers: KeyValue;
+    };
 }
