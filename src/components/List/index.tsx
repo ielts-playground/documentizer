@@ -2,15 +2,20 @@ import React, { CSSProperties } from 'react';
 import { Options, Title } from '@components';
 import { Component, KeyValue, WithOptions } from '@types';
 
-type ListProps = Component<string> & WithOptions<KeyValue>;
+type ListProps = Component<string> &
+    WithOptions<KeyValue> & {
+        width?: string;
+        center?: boolean;
+    };
 
 export default function (props: ListProps) {
     const style = {
         display: 'block',
+        border: 'solid',
         marginLeft: 'auto',
         marginRight: 'auto',
-        border: 'solid',
-        width: 'max-content',
+        width: props.width ?? 'max-content',
+        backgroundColor: 'white',
     } as CSSProperties;
 
     return (
