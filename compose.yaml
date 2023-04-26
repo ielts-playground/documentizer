@@ -2,8 +2,11 @@ services:
   app:
     build:
       context: .
-      network: host
-    image: documentizer:1.0
-    container_name: documentizer
+    labels:
+      app: "ielts-playground"
+    image: ielts-playground/documentizer:1.0
+    container_name: ielts-playground-documentizer
+    environment:
+      - NEXT_PUBLIC_SERVER_BASE_URL=$SERVER_BASE_URL
     ports:
       - $HTTP_PORT:3000
