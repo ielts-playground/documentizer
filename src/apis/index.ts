@@ -80,6 +80,28 @@ export async function retrieveWritingTest(examId: number) {
     };
 }
 
+export async function evaluateWritingExam(examId: number, point: number) {
+    await api.default.post(`/exam/${examId}/evaluate/writing`, {
+        point,
+    });
+}
+
+export async function retrieveExamFinalResult(examId: number) {
+    return (await api.default.get(`/exam/${examId}/result`)).data as {
+        reading: number;
+        listening: number;
+        writing: number;
+        examiner: string;
+        examinee: {
+            username: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            phoneNumber: string;
+        };
+    };
+}
+
 /**
  * Retrieves a writing examination's answers.
  * @param examId the examination's id.

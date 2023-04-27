@@ -1,4 +1,8 @@
-import { retrieveWritingAnswers, retrieveWritingTest } from '@apis';
+import {
+    retrieveWritingAnswers,
+    retrieveWritingTest,
+    evaluateWritingExam,
+} from '@apis';
 import Part from '@components/Part';
 import { AnyComponent, KeyValue } from '@types';
 import { useRouter } from 'next/router';
@@ -54,7 +58,13 @@ export default function () {
     }, [router]);
 
     const submit = () => {
-        // TODO: xxx
+        evaluateWritingExam(examId, point)
+            .then(() => {
+                router.push(`/exam/${examId}`);
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
     };
 
     const hide = (index: number) => {
