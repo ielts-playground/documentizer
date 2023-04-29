@@ -1,7 +1,12 @@
-import { ping } from '@apis';
 import { createTestWithAudio } from '@apis';
 import { TestCreationRequest } from '@apis/types';
-import { Part, RichTextInput, UploadAudio, UploadImage } from '@components';
+import {
+    Auth,
+    Part,
+    RichTextInput,
+    UploadAudio,
+    UploadImage,
+} from '@components';
 import { AnyComponent, KeyValue } from '@types';
 import { UNSAVED_VALIDITY_IN_MILLISECONDS, unsavedKey } from '@utils/constants';
 import { extract } from '@utils/extractors';
@@ -35,13 +40,6 @@ export default function () {
         const { skill } = router.query;
         setSkill(skill as string);
     }, [router]);
-
-    useEffect(() => {
-        const redirect = encodeURIComponent(window.location.pathname);
-        ping().catch(() => {
-            router.push(`/log-in?redirect=${redirect}`);
-        });
-    }, []);
 
     useEffect(() => {
         const initial = {} as State;
@@ -322,12 +320,13 @@ export default function () {
         }
     };
 
-    const manualEditing = () => {
-        router.push(`/new/${skill}/manual`);
+    const returnHome = () => {
+        router.push('/redirect');
     };
 
     return (
         <>
+            <Auth />
             <h1 className={styles.header}>
                 <span>{`${String(skill).toUpperCase()} PART ${Number(
                     part
@@ -375,6 +374,13 @@ export default function () {
                             <span>|</span>
                         </>
                     )}
+                    <span
+                        className={styles.submit}
+                        onClick={() => returnHome()}
+                    >
+                        RETURN
+                    </span>
+                    <span>|</span>
                     <span className={styles.submit} onClick={() => submit()}>
                         SUBMIT
                     </span>

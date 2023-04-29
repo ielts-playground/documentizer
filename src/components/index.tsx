@@ -1,3 +1,4 @@
+import Auth from '@components/Auth';
 import Box from '@components/Box';
 import Footnote from '@components/Footnote';
 import Image from '@components/Image';
@@ -12,6 +13,7 @@ import UploadAudio from '@components/UploadAudio';
 import UploadImage from '@components/UploadImage';
 
 export {
+    Auth,
     Box,
     Footnote,
     Image,

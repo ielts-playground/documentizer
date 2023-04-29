@@ -1,7 +1,8 @@
-import { createUser, ping } from '@apis';
+import { createUser } from '@apis';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './styles.module.scss';
+import Auth from '@components/Auth';
 
 type User = {
     email: string;
@@ -24,13 +25,6 @@ export default function () {
         username: '',
     });
 
-    useEffect(() => {
-        const redirect = encodeURIComponent(window.location.pathname);
-        ping().catch(() => {
-            router.push(`/log-in?redirect=${redirect}`);
-        });
-    }, []);
-
     const handleChange = (event: any) => {
         const { name, value } = event.target;
         setUser((prevState) => ({ ...prevState, [name]: value }));
@@ -48,6 +42,7 @@ export default function () {
 
     return (
         <form className={styles.form} onSubmit={(e) => handleSubmit(e)}>
+            <Auth />
             <h2>Create an account for user</h2>
             <label>
                 Email:

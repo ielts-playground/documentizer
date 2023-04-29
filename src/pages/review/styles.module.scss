@@ -9,23 +9,29 @@ $submitColor: #4abb46c7;
     
         height: 10vh;
         margin: 4vh 4vh 0 4vh;
-    
-        @mixin underlineOnHover {
+        display: flex;
+        justify-content: space-between;
+        width: 30%;
+
+        h2 {
+            color: #332f2f;
+        }
+        
+        .home{
             &:hover {
                 cursor: pointer;
                 text-decoration: underline;
-            }
-        }
-    
-        h2 {
-            @include underlineOnHover;
-            color: #999;
-    
-            &:hover {
                 color: #000;
             }
+            color: #356951;
         }
-    
+    }
+ 
+    .option {
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
     }
 
 

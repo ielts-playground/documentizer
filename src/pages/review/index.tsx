@@ -67,7 +67,11 @@ export default function () {
         const { start, end } = calculateRange();
         const visibleItems = pageContent?.examIds.slice(start, end) || [];
         return visibleItems.map((item) => (
-            <h3 onClick={() => reviewWritigExam(item.examId)} key={item.examId}>
+            <h3
+                className={styles.option}
+                onClick={() => reviewWritigExam(item.examId)}
+                key={item.examId}
+            >
                 {item.examId}
             </h3>
         ));
@@ -96,8 +100,9 @@ export default function () {
     return (
         <div className={styles.container}>
             <span className={styles.header}>
-                <h2>EXAMS</h2>
+                <h2>LIST OF EXAMS</h2>
                 <h2
+                    className={styles.home}
                     onClick={() => {
                         router.push('/redirect');
                     }}

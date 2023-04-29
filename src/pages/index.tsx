@@ -1,19 +1,13 @@
-import { ping } from '@apis';
+import { Auth } from '@components';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export default function () {
     const router = useRouter();
 
-    useEffect(() => {
-        ping()
-            .then(() => {
-                router.push('/redirect');
-            })
-            .catch((_) => {
-                router.push('/log-in');
-            });
-    }, []);
-
-    return <div>Loading...</div>;
+    return (
+        <div>
+            <Auth successUrl={'/redirect'} />
+        </div>
+    );
 }

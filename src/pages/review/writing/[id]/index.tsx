@@ -1,11 +1,17 @@
-import { retrieveWritingAnswers, retrieveWritingTest } from '@apis';
-import { Box, List, Part } from '@components';
+import {
+    retrieveWritingAnswers,
+    retrieveWritingTest,
+    evaluateWritingExam,
+} from '@apis';
+import Part from '@components/Part';
 import { AnyComponent, KeyValue } from '@types';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import MarkdownView from 'react-showdown';
 
 import styles from './styles.module.scss';
+import Text from '@components/Text';
+import Box from '@components/Box';
+import List from '@components/List';
 
 export default function () {
     const router = useRouter();
@@ -52,7 +58,13 @@ export default function () {
     }, [router]);
 
     const submit = () => {
-        alert('Not implemented yet!');
+        evaluateWritingExam(examId, point)
+            .then(() => {
+                router.push(`/exam/${examId}`);
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
     };
 
     const hide = (index: number) => {
