@@ -5,6 +5,7 @@ import styles from './styles.module.scss';
 
 type User = {
     email: string;
+    phoneNumber: string;
     firstName: string;
     lastName: string;
     password: string;
@@ -18,6 +19,7 @@ export default function () {
         firstName: '',
         lastName: '',
         email: '',
+        phoneNumber: '',
         password: '',
         username: '',
     });
@@ -57,6 +59,15 @@ export default function () {
                 />
             </label>
             <label>
+                Phone number:
+                <input
+                    type="number"
+                    name="phoneNumber"
+                    value={user.phoneNumber}
+                    onChange={handleChange}
+                />
+            </label>
+            <label>
                 FirstName:
                 <input
                     type="text"
@@ -92,10 +103,12 @@ export default function () {
                     onChange={handleChange}
                 />
             </label>
-            <button type="submit">Create User</button>
-            <button type="button" onClick={returnRedirecting}>
-                Return home
-            </button>
+            <div className={styles.buttons}>
+                <button type="submit">Create User</button>
+                <button type="button" onClick={returnRedirecting}>
+                    Return home
+                </button>
+            </div>
         </form>
     );
 }

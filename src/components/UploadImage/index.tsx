@@ -31,7 +31,7 @@ export default function (props: UploadProps) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = async (e) => {
-            const quality = 0.35;
+            const quality = 0.99;
             const original = e.target.result.toString();
             const reduced = await reduceImage(original, quality);
             updateImage(reduced);

@@ -1,13 +1,11 @@
 import { retrieveWritingAnswers, retrieveWritingTest } from '@apis';
-import Part from '@components/Part';
+import { Box, List, Part } from '@components';
 import { AnyComponent, KeyValue } from '@types';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import MarkdownView from 'react-showdown';
 
 import styles from './styles.module.scss';
-import Text from '@components/Text';
-import Box from '@components/Box';
-import List from '@components/List';
 
 export default function () {
     const router = useRouter();
@@ -54,7 +52,7 @@ export default function () {
     }, [router]);
 
     const submit = () => {
-        // TODO: xxx
+        alert('Not implemented yet!');
     };
 
     const hide = (index: number) => {
@@ -155,7 +153,7 @@ export default function () {
                         </h2>
                         {visibilities[index] && (
                             <h4 className={styles.header}>
-                                <List width={'60vw'} value={answers[key]} />
+                                <MarkdownView markdown={answers[key]} />
                             </h4>
                         )}
                         {!visibilities[index] && (

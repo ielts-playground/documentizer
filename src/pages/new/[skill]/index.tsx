@@ -344,15 +344,6 @@ export default function () {
                     </span>
                 ))}
                 <span className={styles.right}>
-                    <>
-                        <span
-                            className={styles.edit}
-                            onClick={() => manualEditing()}
-                        >
-                            MANUAL
-                        </span>
-                        <span>|</span>
-                    </>
                     <span
                         className={styles.edit}
                         onClick={() => startEditing()}

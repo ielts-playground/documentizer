@@ -61,6 +61,7 @@ export async function ping() {
 export async function createUser(userRegister: any) {
     const body = {
         email: userRegister.email,
+        phoneNumber: userRegister.phoneNumber,
         firstName: userRegister.firstName,
         lastName: userRegister.lastName,
         password: userRegister.password,
@@ -88,5 +89,28 @@ export async function retrieveWritingAnswers(examId: number) {
     return (await api.default.get(`/exam/${examId}/answer/writing`)).data as {
         examId: number;
         answers: KeyValue;
+    };
+}
+
+/**
+ * XXX.
+ * @param pageNumber retrieveUnevaluatedExams.
+ * @param pageSize retrieveUnevaluatedExams.
+ */
+export async function retrieveUnevaluatedExams(
+    pageNumber: number,
+    pageSize: number = 20
+) {
+    return (
+        await api.default.get(
+            `/exam/not-graded?page=${pageNumber}&size=${pageSize}`
+        )
+    ).data as {
+        page: number;
+        size: number;
+        total: number;
+        examIds: {
+            examId: number;
+        }[];
     };
 }
