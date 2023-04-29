@@ -1,17 +1,9 @@
-import { ping } from '@apis';
 import { useRouter } from 'next/router';
 import styles from './styles.module.scss';
-import { useEffect } from 'react';
+import Auth from '@components/Auth';
 
 export default function () {
     const router = useRouter();
-
-    useEffect(() => {
-        const redirect = encodeURIComponent(window.location.pathname);
-        ping().catch(() => {
-            router.push(`/log-in?redirect=${redirect}`);
-        });
-    }, []);
 
     const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         const skill = event.currentTarget.name;
@@ -37,9 +29,10 @@ export default function () {
 
     return (
         <div className={styles.all}>
+            <Auth />
             <div className={styles.box}>
                 <p>
-                    ,<b>WHICH SKILL DO YOU WANT TO SUBMIT?</b>
+                    <b>WHICH SKILL DO YOU WANT TO SUBMIT?</b>
                 </p>
                 <button name="reading" onClick={(e) => handleButtonClick(e)}>
                     READING
