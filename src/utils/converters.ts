@@ -57,7 +57,8 @@ export function safeHtml(html: string) {
             /<p><strong>(questions\s+\d+\D+\d+)<\/strong>\s\[\[title\]\]<\/p>/gi,
             '<p><strong>$1</strong></p>'
         )
-        .concat('<br>');
+        .concat('<br>')
+        .replaceAll(/(<br>)+/g, '<br>');
 }
 
 export function safeMarkdown(markdown: string) {
@@ -68,7 +69,9 @@ export function safeMarkdown(markdown: string) {
         .replaceAll(/\*{2}(\d+)\*{0,2}\s*\.\.+\*{0,2}/g, '**[[$1]]**') // mark as a box
         .replaceAll(/(\*+[A-Z]+?\*+)\s+/g, '$1 ')
         .replaceAll(/(\*+\d+?\*+)\s+/g, '$1 ')
-        .replaceAll(/\.\.+/g, '.');
+        .replaceAll(/\.\.+/g, '.')
+        .replaceAll(/(<br>)/g, '\n')
+        .replaceAll(/(\\n\\n)+/g, '\n\n');
 }
 
 export function markdownToHtml(markdown: string) {
