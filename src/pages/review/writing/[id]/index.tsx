@@ -9,9 +9,10 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import styles from './styles.module.scss';
-import Text from '@components/Text';
 import Box from '@components/Box';
 import List from '@components/List';
+import MarkdownView from 'react-showdown';
+import Auth from '@components/Auth';
 
 export default function () {
     const router = useRouter();
@@ -76,6 +77,7 @@ export default function () {
 
     return (
         <div className={styles.container}>
+            <Auth />
             <h1 className={styles.header}>
                 <span
                     className={styles.part}
