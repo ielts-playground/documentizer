@@ -6,6 +6,7 @@ import Auth from '@components/Auth';
 
 type User = {
     email: string;
+    phoneNumber: string;
     firstName: string;
     lastName: string;
     password: string;
@@ -19,6 +20,7 @@ export default function () {
         firstName: '',
         lastName: '',
         email: '',
+        phoneNumber: '',
         password: '',
         username: '',
     });
@@ -48,6 +50,15 @@ export default function () {
                     type="email"
                     name="email"
                     value={user.email}
+                    onChange={handleChange}
+                />
+            </label>
+            <label>
+                Phone number:
+                <input
+                    type="number"
+                    name="phoneNumber"
+                    value={user.phoneNumber}
                     onChange={handleChange}
                 />
             </label>
@@ -87,10 +98,12 @@ export default function () {
                     onChange={handleChange}
                 />
             </label>
-            <button type="submit">Create User</button>
-            <button type="button" onClick={returnRedirecting}>
-                Return home
-            </button>
+            <div className={styles.buttons}>
+                <button type="submit">Create User</button>
+                <button type="button" onClick={returnRedirecting}>
+                    Return home
+                </button>
+            </div>
         </form>
     );
 }

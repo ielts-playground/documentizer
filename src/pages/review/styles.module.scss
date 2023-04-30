@@ -1,0 +1,45 @@
+@import '@styles/font';
+
+$submitColor: #4abb46c7;
+
+.container {
+    @include useFont;
+
+    .header {
+    
+        height: 10vh;
+        margin: 4vh 4vh 0 4vh;
+        display: flex;
+        justify-content: space-between;
+        width: 30%;
+
+        h2 {
+            color: #332f2f;
+        }
+        
+        .home{
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+                color: #000;
+            }
+            color: #356951;
+        }
+    }
+ 
+    .option {
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+
+
+    .footer {
+        button {
+            color: $submitColor;
+        }
+    }
+}
+
+

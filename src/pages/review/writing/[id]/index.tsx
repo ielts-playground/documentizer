@@ -165,7 +165,7 @@ export default function () {
                         </h2>
                         {visibilities[index] && (
                             <h4 className={styles.header}>
-                                <List width={'60vw'} value={answers[key]} />
+                                <MarkdownView markdown={answers[key]} />
                             </h4>
                         )}
                         {!visibilities[index] && (

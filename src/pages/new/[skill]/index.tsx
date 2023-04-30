@@ -320,8 +320,8 @@ export default function () {
         }
     };
 
-    const manualEditing = () => {
-        router.push(`/new/${skill}/manual`);
+    const returnHome = () => {
+        router.push('/redirect');
     };
 
     return (
@@ -343,15 +343,6 @@ export default function () {
                     </span>
                 ))}
                 <span className={styles.right}>
-                    <>
-                        <span
-                            className={styles.edit}
-                            onClick={() => manualEditing()}
-                        >
-                            MANUAL
-                        </span>
-                        <span>|</span>
-                    </>
                     <span
                         className={styles.edit}
                         onClick={() => startEditing()}
@@ -383,6 +374,13 @@ export default function () {
                             <span>|</span>
                         </>
                     )}
+                    <span
+                        className={styles.submit}
+                        onClick={() => returnHome()}
+                    >
+                        RETURN
+                    </span>
+                    <span>|</span>
                     <span className={styles.submit} onClick={() => submit()}>
                         SUBMIT
                     </span>

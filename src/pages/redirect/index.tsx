@@ -27,24 +27,31 @@ export default function () {
         router.push('/register');
     };
 
+    const reviewWriting = () => {
+        router.push('/review');
+    };
+
     return (
         <div className={styles.all}>
             <Auth />
             <div className={styles.box}>
                 <p>
-                    <b>WHICH SKILL DO YOU WANT TO SUBMIT?</b>
+                    <b>WHICH ACTION DO YOU WANT TO IMPLEMENT?</b>
                 </p>
                 <button name="reading" onClick={(e) => handleButtonClick(e)}>
-                    READING
+                    SUBMIT READING
                 </button>
                 <button name="listening" onClick={(e) => handleButtonClick(e)}>
-                    LISTENING
+                    SUBMIT LISTENING
                 </button>
                 <button name="writing" onClick={(e) => handleButtonClick(e)}>
-                    WRITING
+                    SUBMIT WRITING
                 </button>
                 <button onClick={(e) => createUser()}>
                     Create user's account
+                </button>
+                <button onClick={(e) => reviewWriting()}>
+                    Review writing's exams
                 </button>
             </div>
         </div>
