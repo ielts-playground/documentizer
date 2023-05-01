@@ -347,7 +347,7 @@ export default function () {
                         className={styles.edit}
                         onClick={() => startEditing()}
                     >
-                        {skill === 'reading' ? 'EDIT PASSAGE' : 'EDIT'}
+                        {skill === 'reading' ? 'PASSAGE' : 'EDIT'}
                     </span>
                     <span>|</span>
                     {skill === 'reading' && (
@@ -356,7 +356,7 @@ export default function () {
                                 className={styles.edit}
                                 onClick={() => startEditing(1)}
                             >
-                                EDIT QUESTIONS
+                                QUESTIONS
                             </span>
                             <span>|</span>
                         </>

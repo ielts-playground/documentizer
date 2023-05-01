@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 type Props = {
     successUrl?: string;
     fallbackUrl?: string;
+    onSuccess?: () => void;
 };
 
 export default function (props: Props) {
@@ -21,6 +22,9 @@ export default function (props: Props) {
                     router.push(props.successUrl);
                 }
                 setAuthorizing(false);
+                if (props.onSuccess) {
+                    props.onSuccess();
+                }
             })
             .catch(() => {
                 router.push(
