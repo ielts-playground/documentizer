@@ -70,6 +70,7 @@ export function safeMarkdown(markdown: string) {
         .replaceAll(/(\*+[A-Z]+?\*+)\s+/g, '$1 ')
         .replaceAll(/(\*+\d+?\*+)\s+/g, '$1 ')
         .replaceAll(/\.\.+/g, '.')
+        .replaceAll(/<span>(.+?)<\/span>/g, '$1')
         .replaceAll(/(<br>)/g, '\n')
         .replaceAll(/(\\n\\n)+/g, '\n\n');
 }
