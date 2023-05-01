@@ -76,11 +76,11 @@ export function safeMarkdown(markdown: string) {
 }
 
 export function markdownToHtml(markdown: string) {
-    return converter.makeHtml(safeMarkdown(markdown));
+    return safeHtml(converter.makeHtml(safeMarkdown(markdown)));
 }
 
 export function htmlToMarkdown(html: string) {
-    return converter.makeMarkdown(safeHtml(html));
+    return safeMarkdown(converter.makeMarkdown(safeHtml(html)));
 }
 
 export function markdownToKeyValue(markdown: string) {

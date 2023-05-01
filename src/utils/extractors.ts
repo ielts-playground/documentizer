@@ -487,15 +487,17 @@ export async function extract(markdown = '') {
             .trim(),
         sort: 0,
     };
-    return Promise.resolve([initial])
-        .then(processTitles)
-        .then(processImages)
-        .then(processAnswerSelectingQuestions)
-        .then(processBoxes)
-        .then(processAnswerWritingQuestions)
-        .then(processQuestionRanges)
-        .then(processOptions)
-        .then(clean)
-        .then(sort)
-        .then(convertToComponents);
+    return (
+        Promise.resolve([initial])
+            .then(processTitles)
+            .then(processImages)
+            .then(processAnswerSelectingQuestions)
+            .then(processBoxes)
+            .then(processAnswerWritingQuestions)
+            .then(processQuestionRanges)
+            // .then(processOptions)
+            .then(clean)
+            .then(sort)
+            .then(convertToComponents)
+    );
 }
