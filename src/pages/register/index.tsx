@@ -31,9 +31,12 @@ export default function () {
     };
 
     const handleSubmit = (event: any) => {
-        createUser(user).catch(() => {
-            alert('Something wrong, please try again');
-        });
+        const success = createUser(user);
+        if (success) {
+            alert('Create user successfully');
+        } else {
+            alert('Something wrong, please try again!');
+        }
     };
 
     const returnRedirecting = () => {
