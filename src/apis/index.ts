@@ -58,7 +58,7 @@ export async function ping() {
  * Registers a user.
  * @param userRegister the user's info.
  */
-export async function createUser(userRegister: any) {
+export async function createUser(userRegister: any): Promise<Boolean> {
     const body = {
         email: userRegister.email,
         phoneNumber: userRegister.phoneNumber,
@@ -67,7 +67,14 @@ export async function createUser(userRegister: any) {
         password: userRegister.password,
         username: userRegister.username,
     };
-    await api.default.post('/register', body);
+
+    try {
+        await api.default.post('/register', body);
+        return true;
+    } catch (error) {
+        console.error('API request failed:', error);
+        return false;
+    }
 }
 
 /**
