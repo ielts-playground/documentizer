@@ -84,7 +84,9 @@ export async function createUser(userRegister: any): Promise<Boolean> {
 export async function retrieveWritingTest(examId: number) {
     return (await api.default.get(`/exam/${examId}/test/writing`)).data as {
         examId: number;
-        components: AnyComponent[];
+        components: (AnyComponent & {
+            partNumber: number;
+        })[];
     };
 }
 

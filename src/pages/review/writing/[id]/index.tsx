@@ -135,9 +135,22 @@ export default function () {
             )}
             {!!visibilities[-1] && (
                 <>
+                    <h1>Task 1</h1>
                     <Part
-                        number={undefined}
-                        components={components}
+                        number={1}
+                        components={components.filter(
+                            (c) => c['partNumber'] === 1
+                        )}
+                        skill={'writing'}
+                        onClick={(_) => {}}
+                        onAnswer={(_) => {}}
+                    />
+                    <h1>Task 2</h1>
+                    <Part
+                        number={2}
+                        components={components.filter(
+                            (c) => c['partNumber'] === 2
+                        )}
                         skill={'writing'}
                         onClick={(_) => {}}
                         onAnswer={(_) => {}}
