@@ -142,6 +142,7 @@ export async function retrieveUnevaluatedExams(
         total: number;
         examIds: {
             examId: number;
+            userName: string;
         }[];
     };
 }

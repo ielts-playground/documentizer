@@ -11,6 +11,7 @@ type Page = {
     total: number;
     examIds: {
         examId: number;
+        userName: string;
     }[];
 };
 
@@ -58,7 +59,10 @@ export default function () {
                 onClick={() => reviewWritigExam(item.examId)}
                 key={item.examId}
             >
+                {'#'}
                 {item.examId}
+                {' of '}
+                {item.userName}
             </h3>
         ));
     };
