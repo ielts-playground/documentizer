@@ -16,6 +16,7 @@ type PartProps = {
 
 export default function (props: PartProps) {
     const [components, setComponents] = useState<ReactElement[][]>([]);
+    const [sizes, setSizes] = useState<string[]>(['100%', 'auto', '0%']);
 
     useEffect(() => {
         const createPane = (
@@ -43,20 +44,40 @@ export default function (props: PartProps) {
         ]);
     }, [JSON.stringify(props.components)]);
 
+    useEffect(() => {
+        const hasLeft = !!components[0]?.length;
+        const hasRight = !!components[1]?.length;
+        if (hasLeft && hasRight) {
+            setSizes(
+                props.rightPane ? ['45%', '45%', '10%'] : ['50%', '50%', 'auto']
+            );
+        } else if (hasLeft && !hasRight) {
+            setSizes(
+                props.rightPane
+                    ? ['90%', 'auto', '10%']
+                    : ['100%', 'auto', '0%']
+            );
+        } else if (hasRight && !hasLeft) {
+            setSizes(
+                props.rightPane
+                    ? ['auto', '90%', '10%']
+                    : ['auto', '100%', '0%']
+            );
+        } else {
+            setSizes(
+                props.rightPane
+                    ? ['90%%', 'auto', '10%']
+                    : ['100%', 'auto', '0%']
+            );
+        }
+    }, [components[0]?.length, components[1]?.length, props.rightPane]);
+
     return (
         <>
             <SplitPane
                 className={styles.container}
                 split={'vertical'}
-                sizes={
-                    !!components[0]?.length && !!components[1]?.length
-                        ? props.rightPane
-                            ? ['45%', '45%', '10%']
-                            : ['50%', '50%', 'auto']
-                        : props.rightPane
-                        ? ['90%', 'auto', '10%']
-                        : ['100%', 'auto', '0%']
-                }
+                sizes={sizes}
                 sashRender={undefined}
                 onChange={undefined}
             >

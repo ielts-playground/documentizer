@@ -343,24 +343,24 @@ export default function () {
                     </span>
                 ))}
                 <span className={styles.right}>
-                    <span
-                        className={styles.edit}
-                        onClick={() => startEditing()}
-                    >
-                        {skill === 'reading' ? 'PASSAGE' : 'EDIT'}
-                    </span>
-                    <span>|</span>
                     {skill === 'reading' && (
                         <>
                             <span
                                 className={styles.edit}
-                                onClick={() => startEditing(1)}
+                                onClick={() => startEditing()}
                             >
-                                QUESTIONS
+                                PASSAGE
                             </span>
                             <span>|</span>
                         </>
                     )}
+                    <span
+                        className={styles.edit}
+                        onClick={() => startEditing(1)}
+                    >
+                        {skill === 'reading' ? 'QUESTIONS' : 'EDIT'}
+                    </span>
+                    <span>|</span>
                     {skill === 'listening' && (
                         <>
                             <span
