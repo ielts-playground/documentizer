@@ -1,6 +1,7 @@
 import { AnyComponent } from '@types';
 
 export type TestCreationRequest = {
+    id?: number;
     skill: string;
     components: (AnyComponent & {
         part: number;

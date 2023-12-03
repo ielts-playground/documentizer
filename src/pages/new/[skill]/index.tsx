@@ -41,6 +41,25 @@ export default function () {
         setSkill(skill as string);
     }, [router]);
 
+    const restorePreviousSession = (restoreSkill: string) => {
+        try {
+            const key = unsavedKey(restoreSkill);
+            const { audio, content, createdAt } = JSON.parse(
+                localStorage.getItem(key)
+            ) as {
+                audio?: File;
+                content: State;
+                createdAt: number;
+            };
+            if (Date.now() < createdAt + UNSAVED_VALIDITY_IN_MILLISECONDS) {
+                return { content, audio };
+            } else {
+                localStorage.removeItem(key);
+            }
+        } catch {}
+        return {};
+    };
+
     useEffect(() => {
         const initial = {} as State;
         parts().forEach((num) => {
@@ -53,22 +72,9 @@ export default function () {
                 },
             };
         });
-        let unsaved: State;
-        try {
-            const key = unsavedKey(skill);
-            const { content, createdAt } = JSON.parse(
-                localStorage.getItem(key)
-            ) as {
-                content: State;
-                createdAt: number;
-            };
-            if (Date.now() < createdAt + UNSAVED_VALIDITY_IN_MILLISECONDS) {
-                unsaved = content;
-            } else {
-                localStorage.removeItem(key);
-            }
-        } catch {}
+        const { content: unsaved, audio } = restorePreviousSession(skill);
         if (unsaved) {
+            setAudio(audio);
             setState(unsaved);
         } else {
             setState(initial);
@@ -76,12 +82,13 @@ export default function () {
         setPart(1);
     }, [skill]);
 
-    useBeforeunload(() => {
+    const saveCurrentSession = () => {
         const key = unsavedKey(skill);
         if (!submitted) {
             localStorage.setItem(
                 key,
                 JSON.stringify({
+                    audio,
                     content: state,
                     createdAt: Date.now(),
                 })
@@ -89,18 +96,26 @@ export default function () {
         } else {
             localStorage.removeItem(key);
         }
+    };
+
+    useBeforeunload(() => {
+        saveCurrentSession();
     }, [skill]);
 
-    const parts = (exclude: number = 0) => {
+    const parts = (exclude: number = 0, targetSkill: string = skill) => {
         const allParts = [];
-        if (skill === 'reading') {
+        if (targetSkill === 'reading') {
             allParts.push(1, 2, 3);
-        } else if (skill === 'listening') {
+        } else if (targetSkill === 'listening') {
             allParts.push(1, 2, 3, 4);
-        } else if (skill === 'writing') {
+        } else if (targetSkill === 'writing') {
             allParts.push(1, 2);
         }
         return allParts.filter((num) => num !== exclude);
+    };
+
+    const skills = (exclude: string = '') => {
+        return ['listening', 'reading', 'writing'].filter((s) => s !== exclude);
     };
 
     const answerables = () => {
@@ -173,30 +188,65 @@ export default function () {
             });
     };
 
-    const submit = async () => {
+    const submitAll = async () => {
+        const allStates = {
+            [skill]: {
+                content: state,
+                audio,
+            } as {
+                content?: State;
+                audio?: File;
+            },
+        };
+        skills(skill).forEach((sk) => {
+            allStates[sk] = restorePreviousSession(sk);
+        });
+        let testId: number = null;
+        Object.keys(allStates).forEach(async (sk) => {
+            const { content: currentContent, audio: currentAudio } =
+                allStates[sk] || {};
+            const { id } = await createTestWithAudio(
+                {
+                    id: testId,
+                    ...retrieveSubmitContent(sk, currentContent),
+                },
+                currentAudio
+            );
+            testId = id;
+        });
+    };
+
+    const retrieveSubmitContent = (
+        submitSkill: string = skill,
+        submitState = state
+    ) => {
         const content = {
-            skill,
+            skill: submitSkill,
             components: [],
             answers: [],
         } as TestCreationRequest;
-        parts().forEach((num) => {
-            (state[num]?.questions || []).forEach((c) => {
+        parts(0, submitSkill).forEach((num) => {
+            (submitState[num]?.questions || []).forEach((c) => {
                 content.components.push({
                     ...c,
                     part: num,
                 });
             });
-            Object.keys(state[num]?.answers || {}).forEach((key) => {
+            Object.keys(submitState[num]?.answers || {}).forEach((key) => {
                 content.answers.push({
                     kei: key,
-                    value: (state[num]?.answers || {})[key],
+                    value: (submitState[num]?.answers || {})[key],
                     part: num,
                 });
             });
         });
+        return content;
+    };
+
+    const submit = async () => {
         try {
             setModal(<>Submitting...</>);
-            await createTestWithAudio(content, audio);
+            await submitAll();
             setSubmitted(true);
             router.push('/redirect'); // TODO: use other redirected path
         } catch (err) {
@@ -328,6 +378,20 @@ export default function () {
         <>
             <Auth />
             <h1 className={styles.header}>
+                {skills(skill).map((sk, index) => (
+                    <span key={index}>
+                        <span
+                            className={styles.part}
+                            onClick={() => {
+                                saveCurrentSession();
+                                router.push(`/new/${sk}`);
+                            }}
+                        >
+                            {`${String(sk).toUpperCase()}`}
+                        </span>
+                        <span>|</span>
+                    </span>
+                ))}
                 <span>{`${String(skill).toUpperCase()} PART ${Number(
                     part
                 )}`}</span>
