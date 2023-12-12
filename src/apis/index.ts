@@ -1,6 +1,6 @@
 import { AnyComponent, KeyValue } from '@types';
 import api, { cookies } from './base';
-import { TestCreationRequest, TestCreationResponse } from './types';
+import { TestCreationRequest, TestCreationResponse, User } from './types';
 
 /**
  * Authenticates a user then set the authorized token to Cookies.
@@ -26,22 +26,24 @@ export async function authenticate(username: string, password: string) {
  * @param content the test.
  */
 export async function createTestWithAudio(
-    content: TestCreationRequest,
-    audio?: File
+    subscription: 'FREE' | 'PREMIUM',
+    audio: File,
+    skillRequests: TestCreationRequest[]
 ) {
     const formData = new FormData();
-    formData.append(
-        'content',
-        new Blob([JSON.stringify(content)], {
-            type: 'application/json',
-        })
-    );
-    if (audio) {
-        formData.append('audio', audio);
+    formData.append('audio', audio);
+    formData.append('subscription', subscription);
+    for (const request of skillRequests) {
+        formData.append(
+            request.skill,
+            new Blob([JSON.stringify(request)], {
+                type: 'application/json',
+            })
+        );
     }
 
     return (
-        await api.default.put<TestCreationResponse>('/test', formData, {
+        await api.default.put<TestCreationResponse>('/test/new', formData, {
             headers: {
                 Authorization: api.default.defaults.headers['Authorization'],
                 'Content-Type': 'multipart/form-data',
@@ -51,7 +53,11 @@ export async function createTestWithAudio(
 }
 
 export async function ping() {
-    await api.default.get('/users');
+    return (await api.default.get<User>('/users')).data;
+}
+
+export function clearToken() {
+    api.default.clearToken();
 }
 
 /**

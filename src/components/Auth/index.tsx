@@ -3,11 +3,12 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import styles from './styles.module.scss';
+import { User } from '@apis/types';
 
 type Props = {
     successUrl?: string;
     fallbackUrl?: string;
-    onSuccess?: () => void;
+    onSuccess?: (user?: User) => void;
 };
 
 export default function (props: Props) {
@@ -17,13 +18,13 @@ export default function (props: Props) {
     useEffect(() => {
         const currentPath = encodeURIComponent(window.location.pathname);
         ping()
-            .then(() => {
+            .then((user) => {
                 if (props.successUrl) {
                     router.push(props.successUrl);
                 }
                 setAuthorizing(false);
                 if (props.onSuccess) {
-                    props.onSuccess();
+                    props.onSuccess(user);
                 }
             })
             .catch(() => {

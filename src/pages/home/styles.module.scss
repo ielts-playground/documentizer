@@ -11,56 +11,40 @@ $submitColor: #4abb46ec;
     left: 0;
     margin: auto;
     width: fit-content;
+    min-width: 50vw;
     height: fit-content;
-    background-color: #fff;
+    background-color: #ddd;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
 
     .box {
+        text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
 
-        .input {
-            width: 200px;
-            height: 30px;
-            border-radius: '10px';
-            border: '1px solid black';
-            background-color: rgb(255, 255, 255);
-            margin: 10px;
-            padding: '10px';
-
-            &:focus {
-                outline: none;
-                border-color: #232a2e;
-                box-shadow: 0 0 5px #232a2e;
-            }
-        }
-
-        @mixin button {
+        button {
+            @include useFont;
+            font-size: large;
+            width: 300px;
+            height: 50px;
             padding: 15px 20px 15px 20px;
             margin: 20px;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
             background-color: $submitColor;
             color: #fff;
-        }
-
-        .disabledButton {
-            @include button;
-            opacity: 0.5;
-        }
-
-        .button {
-            @include button;
-            cursor: pointer;
 
             &:hover {
                 scale: 120%;
             }
+        }
+
+        .gray {
+            background-color: #aaa;
         }
     }
 }

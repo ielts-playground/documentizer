@@ -1,7 +1,14 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import Cookies from 'universal-cookie';
 
 export const cookies = new Cookies();
+
+type CookieAxiosInstance = AxiosInstance & {
+    /**
+     * Removes stored token from the Cookies storage.
+     */
+    clearToken: () => void;
+};
 
 const usingApiKey = axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
@@ -24,5 +31,10 @@ usingToken.interceptors.request.use((config) => {
 
 export default {
     private: usingApiKey,
-    default: usingToken,
+    default: {
+        ...usingToken,
+        clearToken: () => {
+            cookies.remove('token');
+        },
+    } as CookieAxiosInstance,
 };

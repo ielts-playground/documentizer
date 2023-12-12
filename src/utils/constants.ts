@@ -16,3 +16,7 @@ export function unsavedKey(skill: string) {
             return undefined;
     }
 }
+
+export function automaticallySavedKey() {
+    return 'new:auto-save';
+}

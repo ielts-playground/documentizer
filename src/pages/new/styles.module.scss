@@ -28,6 +28,10 @@ $submitColor: #4abb46c7;
         }
     }
 
+    .submit {
+        @include underlineOnHover;
+    }
+
     .right {
         float: right;
 
