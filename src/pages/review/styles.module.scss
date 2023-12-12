@@ -6,7 +6,6 @@ $submitColor: #4abb46c7;
     @include useFont;
 
     .header {
-    
         height: 10vh;
         margin: 4vh 4vh 0 4vh;
         display: flex;
@@ -16,8 +15,8 @@ $submitColor: #4abb46c7;
         h2 {
             color: #332f2f;
         }
-        
-        .home{
+
+        .home {
             &:hover {
                 cursor: pointer;
                 text-decoration: underline;
@@ -26,7 +25,7 @@ $submitColor: #4abb46c7;
             color: #356951;
         }
     }
- 
+
     .option {
         &:hover {
             cursor: pointer;
@@ -34,12 +33,9 @@ $submitColor: #4abb46c7;
         }
     }
 
-
     .footer {
         button {
             color: $submitColor;
         }
     }
 }
-
-

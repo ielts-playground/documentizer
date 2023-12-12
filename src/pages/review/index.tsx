@@ -95,7 +95,7 @@ export default function () {
                 <h2
                     className={styles.home}
                     onClick={() => {
-                        router.push('/redirect');
+                        router.push('/home');
                     }}
                 >
                     HOME

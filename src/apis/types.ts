@@ -1,5 +1,14 @@
 import { AnyComponent } from '@types';
 
+export type User = {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    subscription: string;
+};
+
 export type TestCreationRequest = {
     id?: number;
     skill: string;

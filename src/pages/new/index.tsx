@@ -8,7 +8,11 @@ import {
     UploadImage,
 } from '@components';
 import { AnyComponent, KeyValue } from '@types';
-import { UNSAVED_VALIDITY_IN_MILLISECONDS, unsavedKey } from '@utils/constants';
+import {
+    UNSAVED_VALIDITY_IN_MILLISECONDS,
+    automaticallySavedKey,
+    unsavedKey,
+} from '@utils/constants';
 import { extract } from '@utils/extractors';
 import { useRouter } from 'next/router';
 import React, { CSSProperties, ReactElement, useEffect, useState } from 'react';
@@ -36,15 +40,10 @@ export default function () {
     const [modal, setModal] = useState<ReactElement>(undefined);
     const [submitted, setSubmitted] = useState<boolean>(false);
 
-    useEffect(() => {
-        const { skill } = router.query;
-        setSkill(skill as string);
-    }, [router]);
-
     const restorePreviousSession = (restoreSkill: string) => {
         try {
             const key = unsavedKey(restoreSkill);
-            const { audio, content, createdAt } = JSON.parse(
+            const { content, createdAt } = JSON.parse(
                 localStorage.getItem(key)
             ) as {
                 audio?: File;
@@ -52,7 +51,7 @@ export default function () {
                 createdAt: number;
             };
             if (Date.now() < createdAt + UNSAVED_VALIDITY_IN_MILLISECONDS) {
-                return { content, audio };
+                return { content };
             } else {
                 localStorage.removeItem(key);
             }
@@ -72,19 +71,27 @@ export default function () {
                 },
             };
         });
-        const { content: unsaved, audio } = restorePreviousSession(skill);
+        const { content: unsaved } = restorePreviousSession(skill);
         if (unsaved) {
-            setAudio(audio);
             setState(unsaved);
         } else {
             setState(initial);
         }
         setPart(1);
+
+        const automaticallySaved = localStorage.getItem(
+            automaticallySavedKey()
+        );
+        if (automaticallySaved) {
+            setInterval(saveCurrentSession, 20000);
+        }
     }, [skill]);
 
-    const saveCurrentSession = () => {
+    const saveCurrentSession = (clear?: boolean) => {
         const key = unsavedKey(skill);
-        if (!submitted) {
+        if (clear || submitted) {
+            localStorage.removeItem(key);
+        } else {
             localStorage.setItem(
                 key,
                 JSON.stringify({
@@ -93,8 +100,6 @@ export default function () {
                     createdAt: Date.now(),
                 })
             );
-        } else {
-            localStorage.removeItem(key);
         }
     };
 
@@ -188,32 +193,18 @@ export default function () {
             });
     };
 
-    const submitAll = async () => {
-        const allStates = {
-            [skill]: {
-                content: state,
-                audio,
-            } as {
-                content?: State;
-                audio?: File;
-            },
+    const submitAll = async (audio: File) => {
+        const free = confirm('Do you want this test to be FREE?');
+        const skillRequest = (sk: string) => {
+            const { content } = restorePreviousSession(sk);
+            return retrieveSubmitContent(sk, content);
         };
-        skills(skill).forEach((sk) => {
-            allStates[sk] = restorePreviousSession(sk);
-        });
-        let testId: number = null;
-        Object.keys(allStates).forEach(async (sk) => {
-            const { content: currentContent, audio: currentAudio } =
-                allStates[sk] || {};
-            const { id } = await createTestWithAudio(
-                {
-                    id: testId,
-                    ...retrieveSubmitContent(sk, currentContent),
-                },
-                currentAudio
-            );
-            testId = id;
-        });
+        const { id: testId } = await createTestWithAudio(
+            free ? 'FREE' : 'PREMIUM',
+            audio,
+            skills().map(skillRequest)
+        );
+        return testId;
     };
 
     const retrieveSubmitContent = (
@@ -243,20 +234,28 @@ export default function () {
         return content;
     };
 
-    const submit = async () => {
-        try {
+    const submit = () => {
+        alert('Please select an audio for your Listening test.');
+        startUpdatingAudio(async (audio) => {
             setModal(<>Submitting...</>);
-            await submitAll();
-            setSubmitted(true);
-            router.push('/redirect'); // TODO: use other redirected path
-        } catch (err) {
-            console.log(err.message);
-        } finally {
+            try {
+                const testId = await submitAll(audio);
+                setSubmitted(true);
+                alert(`Successfully, test #${testId} has been created.`);
+                saveCurrentSession(true);
+                router.push('/home');
+            } catch (err) {
+                const message =
+                    err.response?.data?.message ||
+                    err?.message ||
+                    'Something went wrong!';
+                alert(`Whoops! It said "${message}".`);
+            }
             setModal(undefined);
-        }
+        });
     };
 
-    const startUpdatingAudio = () => {
+    const startUpdatingAudio = (onFinish: (audio: File) => void) => {
         setModal(
             <UploadAudio
                 audio={audio}
@@ -266,6 +265,7 @@ export default function () {
                 onFinish={(file) => {
                     setAudio(file);
                     setModal(undefined);
+                    onFinish(file);
                 }}
             />
         );
@@ -371,20 +371,24 @@ export default function () {
     };
 
     const returnHome = () => {
-        router.push('/redirect');
+        router.push('/home');
     };
 
     return (
         <>
             <Auth />
             <h1 className={styles.header}>
+                <span className={styles.submit} onClick={() => returnHome()}>
+                    HOME
+                </span>
+                <span>|</span>
                 {skills(skill).map((sk, index) => (
                     <span key={index}>
                         <span
                             className={styles.part}
                             onClick={() => {
                                 saveCurrentSession();
-                                router.push(`/new/${sk}`);
+                                setSkill(sk);
                             }}
                         >
                             {`${String(sk).toUpperCase()}`}
@@ -430,7 +434,9 @@ export default function () {
                             <span
                                 className={audio ? styles.saved : styles.edit}
                                 onClick={() => {
-                                    startUpdatingAudio();
+                                    alert(
+                                        'You can choose an audio file when submitting.'
+                                    );
                                 }}
                             >
                                 AUDIO
@@ -438,14 +444,7 @@ export default function () {
                             <span>|</span>
                         </>
                     )}
-                    <span
-                        className={styles.submit}
-                        onClick={() => returnHome()}
-                    >
-                        RETURN
-                    </span>
-                    <span>|</span>
-                    <span className={styles.submit} onClick={() => submit()}>
+                    <span className={styles.submit} onClick={submit}>
                         SUBMIT
                     </span>
                 </span>

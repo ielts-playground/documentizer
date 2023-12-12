@@ -2,12 +2,21 @@ services:
   app:
     build:
       context: .
-    labels:
-      app: "ielts-playground"
-    image: ielts-playground/documentizer:1.0
-    container_name: ielts-playground-documentizer
+      args:
+        - SERVER_BASE_URL=$SERVER_BASE_URL
+    image: ielts-playground-api-v2-documentizer
+    container_name: ielts-playground-api-v2-documentizer
     environment:
       - NEXT_PUBLIC_SERVER_BASE_URL=$SERVER_BASE_URL
     ports:
       - $HTTP_PORT:3000
+    env_file:
+      - .env
     restart: always
+    networks:
+      - ielts-playground-v2
+
+networks:
+  ielts-playground-v2:
+    name: ielts-playground-v2
+    external: true

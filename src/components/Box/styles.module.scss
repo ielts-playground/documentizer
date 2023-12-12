@@ -4,7 +4,8 @@
     text-align: center;
     border: solid 3px;
 
-    &:focus, &:hover {
+    &:focus,
+    &:hover {
         scale: 120%;
     }
 }
