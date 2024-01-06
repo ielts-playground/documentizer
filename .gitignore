@@ -5,5 +5,7 @@ logs/
 **/*.log
 
 build/
+dist/
 
 .next/
+_next/

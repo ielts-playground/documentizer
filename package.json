@@ -4,6 +4,7 @@
     "dev": "next",
     "start": "next start",
     "build": "next build",
+    "export": "next export -o build",
     "format": "prettier --write 'src/**/*.{js,ts,tsx,scss,css}'",
     "format:staged": "pretty-quick --pattern 'src/**/*.{js,ts,tsx,scss,css}' --staged"
   },
