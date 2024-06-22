@@ -372,10 +372,15 @@ async function processOptions(pieces = [defaultComponent]) {
                 patterns.options
             )) {
                 if (match[0]) {
+                    // options = {
+                    //     [match[1]]: match[2],
+                    //     [match[3]]: match[4],
+                    //     [match[5]]: match[6],
+                    // };
                     options = {
-                        [match[1]]: match[2],
-                        [match[3]]: match[4],
-                        [match[5]]: match[6],
+                        A: match[1],
+                        B: match[3],
+                        C: match[5],
                     };
                 }
             }
@@ -487,17 +492,15 @@ export async function extract(markdown = '') {
             .trim(),
         sort: 0,
     };
-    return (
-        Promise.resolve([initial])
-            .then(processTitles)
-            .then(processImages)
-            .then(processAnswerSelectingQuestions)
-            .then(processBoxes)
-            .then(processAnswerWritingQuestions)
-            .then(processQuestionRanges)
-            // .then(processOptions)
-            .then(clean)
-            .then(sort)
-            .then(convertToComponents)
-    );
+    return Promise.resolve([initial])
+        .then(processTitles)
+        .then(processImages)
+        .then(processAnswerSelectingQuestions)
+        .then(processBoxes)
+        .then(processAnswerWritingQuestions)
+        .then(processQuestionRanges)
+        .then(processOptions)
+        .then(clean)
+        .then(sort)
+        .then(convertToComponents);
 }
