@@ -1,17 +1,26 @@
 {
     "build": {
         "context": ".",
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile",
+        "args": {
+            "NODE_VERSION": "18",
+            "USER": "dev",
+            "WORKSPACE": "documentizer"
+        }
     },
+    "remoteUser": "dev",
     "customizations": {
         "vscode": {
             "extensions": [
                 "anweber.vscode-httpyac",
+                "DavidAnson.vscode-markdownlint",
                 "eamodio.gitlens",
                 "esbenp.prettier-vscode",
                 "ms-azuretools.vscode-docker",
+                "redhat.vscode-yaml",
                 "shardulm94.trailing-spaces",
-                "VisualStudioExptTeam.vscodeintellicode"
+                "VisualStudioExptTeam.vscodeintellicode",
+                "yoavbls.pretty-ts-errors"
             ],
             "settings": {
                 "[typescript]": {
