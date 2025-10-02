@@ -1,0 +1,29 @@
+name: Deploy V1
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - name: Install dependencies
+        run: yarn install
+      - name: Build
+        run: echo "NEXT_PUBLIC_SERVER_BASE_URL=$NEXT_PUBLIC_SERVER_BASE_URL" > .env && yarn build && yarn export && touch ./build/.nojekyll
+        env:
+          NEXT_PUBLIC_SERVER_BASE_URL: ${{ vars.NEXT_PUBLIC_SERVER_BASE_URL }}
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: deploy/v1
+          FOLDER: build
