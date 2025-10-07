@@ -1,6 +1,11 @@
 import { AnyComponent, KeyValue } from '@types';
 import api, { cookies } from './base';
-import { TestCreationRequest, TestCreationResponse } from './types';
+import {
+    TestAudioPublishRequest,
+    TestAudioUploadLinkCreationRequest,
+    TestCreationRequest,
+    TestCreationResponse,
+} from './types';
 
 /**
  * Authenticates a user then set the authorized token to Cookies.
@@ -29,6 +34,48 @@ export async function createTestWithAudio(
     content: TestCreationRequest,
     audio?: File
 ) {
+    if (audio) {
+        const uniqueFileName = Date.now() + '_' + audio.name;
+        const contentType = audio.type;
+
+        console.log(`Creating URL to upload audio file...`);
+        const uploadUrl = (
+            await api.default.post<string>('/test/audio/create-upload-link', {
+                fileName: uniqueFileName,
+                contentType,
+            } as TestAudioUploadLinkCreationRequest)
+        ).data;
+        console.log(`Upload URL created: ${uploadUrl}.`);
+
+        console.log(`Uploading audio file...`);
+        const res = await api.new.put(uploadUrl, audio, {
+            headers: {
+                'Content-Type': contentType,
+            },
+        });
+
+        if (res.status >= 400) {
+            throw new Error(`Audio file upload failed: ${res.statusText}`);
+        }
+        console.log(`Audio file uploaded:`, {
+            fileName: uniqueFileName,
+            contentType,
+        });
+
+        console.log(`Publishing audio file...`);
+        const publicUrl = (
+            await api.default.post<string>('/test/audio/make-public', {
+                fileName: uniqueFileName,
+            } as TestAudioPublishRequest)
+        ).data;
+        console.log(`Audio file published: ${publicUrl}`);
+
+        content = {
+            ...content,
+            audioUrl: publicUrl,
+        };
+    }
+
     const formData = new FormData();
     formData.append(
         'content',
@@ -36,9 +83,6 @@ export async function createTestWithAudio(
             type: 'application/json',
         })
     );
-    if (audio) {
-        formData.append('audio', audio);
-    }
 
     return (
         await api.default.put<TestCreationResponse>('/test', formData, {

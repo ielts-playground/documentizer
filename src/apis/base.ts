@@ -25,4 +25,5 @@ usingToken.interceptors.request.use((config) => {
 export default {
     private: usingApiKey,
     default: usingToken,
+    new: axios.create(),
 };
